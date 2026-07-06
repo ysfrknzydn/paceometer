@@ -1,6 +1,6 @@
 # The Paceometer
 
-A literature review supporting a pace-based alternative to the speedometer, built over a summer research project with a professor.
+A literature review supporting a pace-based alternative to the speedometer, built over a summer research project with Dr. John Helveston.
 
 A speedometer tells you how fast you're going. It doesn't tell you what that speed actually buys you. Time to cover a fixed distance is a hyperbola ($t = d/v$), not a straight line, so a fixed speed increase saves a lot of time at low speeds and almost none at high speeds, while crash risk and fuel consumption move in the opposite direction. A **pace** display, minutes required to cover a fixed distance shown alongside (or instead of) mph, makes that arithmetic visible instead of asking drivers to intuit it. This repository reviews the academic literature behind that idea.
 
