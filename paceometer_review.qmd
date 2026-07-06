@@ -1,0 +1,381 @@
+---
+title: "The Paceometer"
+subtitle: "A literature review supporting a pace-based alternative to the speedometer"
+date: 07/05/2026
+format:
+  html:
+    brand: _brand.yml
+    toc: true
+    toc-depth: 3
+    toc-title: "Contents"
+    number-sections: true
+    code-fold: true
+    code-tools: false
+    smooth-scroll: true
+    fig-cap-location: bottom
+    embed-resources: true
+    linkcolor: "#1B4E8C"
+execute:
+  echo: false
+  warning: false
+  freeze: false
+---
+
+```{ojs}
+//| echo: false
+Plot = import("https://esm.sh/@observablehq/plot@0.6")
+```
+
+## Why a Paceometer? {#sec-why}
+
+A speedometer tells you how fast you're going. It doesn't tell you what that speed actually buys you. This report reviews the literature behind a different idea: replacing, or supplementing, the speedometer with a **pace** display, the time required to cover a fixed distance (minutes per 10 miles, say). That's the unit speeding's benefit is actually paid out in, and it behaves nothing like speed itself.
+
+The reason is arithmetic, not opinion. Time to cover a fixed distance is $t = d/v$: a hyperbola, not a straight line. Speeding up from 20 to 30 mph on a 10-mile trip saves 10 minutes. Speeding up from 70 to 80 mph on the same 10 miles saves about one minute. Both are "+10 mph," but the second buys almost nothing. Crash risk and fuel consumption, meanwhile, don't fall as speed rises: they rise, and faster than speed itself, as later sections show. The three curves move in opposite directions, and a plain speed readout shows none of it.
+
+This isn't a hypothetical product idea. Peer and Gamliel actually built and tested a device called, literally, the "Paceometer" in 2013: a modified speedometer that shows minutes-per-10-miles alongside mph. Everything in @sec-bias starts from their result. The rest of this report works through the questions a professor would ask next: does the effect last? Does anyone actually drive differently because of it? Is the risk/fuel side of the story as one-sided as the time-saving side? What should the display look like? Has this been tried in the real world? And how would we even measure whether it worked?
+
+The first of those questions turns out to matter most. As @sec-durability-gap lays out, the one study that directly tests whether a static pace display's benefit survives outside the exact scenario it was shown in found that it doesn't, while a more adaptive alternative's benefit does. Whether that gap can be closed is the central open question this project is positioned to answer, and it comes back throughout the report, not just in the section where it's first documented.
+
+::: {.callout-note}
+## How this review was built
+This report synthesizes 54 sources, journal articles, technical reports, government datasets, and validated survey instruments, collected and read in full (not just abstracts) over the course of this project. The complete bibliography, with abstracts and access notes, lives in a companion document, `lit_review.md`, in this same project. Figures in this report are generated directly from the numbers reported in the primary sources; where a figure required interpolating between reported values, that is stated explicitly in the caption.
+:::
+
+## The Time-Saving Bias {#sec-bias}
+
+### The core finding
+
+People don't intuit the hyperbola. Given a choice between two ways to speed up, they judge time savings as if they were roughly proportional to the increase in speed itself: a linear mental model applied to a nonlinear world. Svenson (2008) demonstrated this cleanly. Across three studies, 72–87% of participants chose an objectively worse option (raising a road's speed from 70 to 110 km/h, say) over one that actually saved more time (raising a different road from 30 to 40 km/h), because the first felt like a bigger speed jump. The same bias turns up in a completely different domain, hospital staffing reorganization, which rules out the idea that this is just a driving quirk.
+
+```{python}
+#| label: fig-hyperbola
+#| fig-cap: "Time to complete a fixed 10-mile trip as a function of speed. The same 10&nbsp;mph increase buys 10 minutes near 20&nbsp;mph but only about a minute near 70–80&nbsp;mph: the entire Paceometer argument compressed into one curve (Peer & Gamliel, 2013)."
+#| fig-alt: "Line chart of time in minutes to travel 10 miles versus speed in miles per hour, from 8 to 100 mph. The curve is a steeply falling hyperbola. Two bracketed speed increases are annotated: 20 to 30 mph saves 10.0 minutes, while 70 to 80 mph saves only 1.1 minutes, illustrating that equal speed gains produce dramatically unequal time savings depending on the starting speed."
+from IPython.display import Image
+Image(filename="figures/fig01_hyperbola.png")
+```
+
+Peer and Gamliel's (2013) response was to stop asking people to compute this hyperbola in their heads and just show it to them. Their prototype, the literal "Paceometer," is a speedometer with a second, blue readout: minutes required to cover 10 miles at the current speed. Across three studies (Amazon Mechanical Turk and university samples), participants shown pace data instead of speed alone were far more accurate:
+
+- Correct time-saved judgments: **58% vs. 20%** (low-speed problem) and **42% vs. 12%** (high-speed problem), pace vs. speed condition.
+- Correct journey-duration estimates: **91% vs. 68%**.
+- Correct "speed needed to arrive on time" judgments: **80% vs. 49%** (10-mile trip).
+
+All differences were large and statistically robust (Wald χ² = 24–32, *p* < .01). Without pace information, nearly a third of responses matched a simple "linear heuristic" (assume time saved is proportional to speed increase), versus about a tenth with pace information. This is the founding result the rest of the review, and the app concept, rests on.
+
+The bias has been replicated with real driver-education-course attendees (Peer, 2010: drivers underestimated time saved by 15–22%, and the size of an individual's bias predicted the speed they said they needed, a direct line from cognitive error to a stated intention to speed), inside an active driving simulator rather than a survey (Eriksson, Svenson & Eriksson, 2013), and across truck/train/tractor framings and both numeric and visual-analog response formats with no change in magnitude (Peer, 2010, *Exploring the time-saving bias*). It also shows up among engineering students, who displayed exactly the same bias as laypeople (Svenson, 2009; no group difference, *F* = 0.57, n.s.); technical training alone doesn't inoculate against it. A 2025 replication in Bosnia and Herzegovina (Marinković, Stančić & Dimitrijević, *N* = 1,414) confirms the phenomenon is still an active, unresolved research topic, though that sample overestimated time savings at *both* low and high starting speeds, a nuance on the classic pattern worth flagging rather than smoothing over.
+
+### Try it: the hyperbola, live
+
+The tool below recreates the core Paceometer arithmetic. Move the slider and watch three things happen at once. Later sections show that crash risk and fuel consumption follow the same driver's choice of speed, just in the opposite direction.
+
+::: {.callout-important}
+## What this illustrative tool is (and is not)
+The **time** curve is exact: $t = d/v$, no approximation. The **relative crash risk** curve applies Kloeden et al.'s (1997) empirical finding that casualty-crash risk in a 60&nbsp;km/h zone doubles for every 5&nbsp;km/h driven above the limit, extrapolated below 60&nbsp;km/h for illustration (their study measured the effect only *above* the limit). The **relative fuel use** curve is a schematic U-shape anchored to Wang et al.'s (2008) measured minimum (~65&nbsp;km/h, ~6.0&nbsp;L/100km); it illustrates the *shape*, not a fitted equation for any specific vehicle. Treat this as a teaching aid for the report's central argument, not a validated predictive model.
+:::
+
+```{ojs}
+//| echo: false
+viewof current_speed = Inputs.range([20, 140], {value: 60, step: 1, label: "Current speed (km/h)"})
+```
+
+```{ojs}
+//| echo: false
+time_min = (10 / current_speed) * 60
+time_at_plus10 = (10 / (current_speed + 10)) * 60
+time_saved = time_min - time_at_plus10
+risk_multiplier = Math.pow(2, (current_speed - 60) / 5)
+fuel_l100 = current_speed >= 65
+  ? 6.0 + 0.00107 * Math.pow(current_speed - 65, 2)
+  : 6.0 + 0.0024 * Math.pow(current_speed - 65, 2)
+
+statCard = (label, value, sub, color) => html`
+  <div style="flex:1; min-width:150px; background:#F4F6F8; border-left:5px solid ${color}; border-radius:6px; padding:14px 16px; margin:6px;">
+    <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.03em; color:#5C6B7A; font-weight:600;">${label}</div>
+    <div style="font-size:1.65rem; font-weight:700; color:#0B2545; font-family: 'Roboto Mono', monospace;">${value}</div>
+    <div style="font-size:0.8rem; color:#5C6B7A;">${sub}</div>
+  </div>
+`
+
+html`<div style="display:flex; flex-wrap:wrap; margin:10px 0 20px 0;">
+  ${statCard("Time for 10 km", time_min.toFixed(1) + " min", `at ${current_speed} km/h`, "#1B4E8C")}
+  ${statCard("Time saved by +10 km/h", time_saved.toFixed(2) + " min", `going ${current_speed} → ${current_speed+10}`, "#2E8B7C")}
+  ${statCard("Relative crash risk", risk_multiplier.toFixed(2) + "×", "vs. 60 km/h baseline", "#D9603B")}
+  ${statCard("Relative fuel use", fuel_l100.toFixed(1) + " L/100km", "illustrative", "#E8A23D")}
+</div>`
+```
+
+```{ojs}
+//| echo: false
+speed_domain = d3.range(20, 141, 1)
+index_data = speed_domain.flatMap(v => {
+  const t = (10 / v) * 60
+  const t60 = (10 / 60) * 60
+  const r = Math.pow(2, (v - 60) / 5)
+  const f = v >= 65 ? 6.0 + 0.00107 * Math.pow(v - 65, 2) : 6.0 + 0.0024 * Math.pow(v - 65, 2)
+  const f60 = 6.0 + 0.0024 * Math.pow(60 - 65, 2)
+  return [
+    {speed: v, index: (t / t60) * 100, series: "Time to cover 10 km"},
+    {speed: v, index: r * 100, series: "Relative crash risk"},
+    {speed: v, index: (f / f60) * 100, series: "Relative fuel use"}
+  ]
+})
+
+Plot.plot({
+  width: 700,
+  height: 420,
+  marginLeft: 55,
+  y: {label: "Index (speed = 60 km/h → 100)", domain: [0, 400], grid: true},
+  x: {label: "Speed (km/h)"},
+  color: {legend: true, domain: ["Time to cover 10 km", "Relative crash risk", "Relative fuel use"],
+          range: ["#1B4E8C", "#D9603B", "#E8A23D"]},
+  marks: [
+    Plot.ruleY([100], {stroke: "#C9CFD6", strokeDasharray: "3,3"}),
+    Plot.line(index_data, {x: "speed", y: "index", stroke: "series", strokeWidth: 3, curve: "basis"}),
+    Plot.ruleX([current_speed], {stroke: "#5C6B7A", strokeWidth: 1.5}),
+    Plot.dot(index_data.filter(d => d.speed === current_speed), {x: "speed", y: "index", fill: "series", r: 5})
+  ]
+})
+```
+
+### The durability gap: does a static display keep working? {#sec-durability-gap}
+
+::: {.callout-important}
+## The central research gap this project can fill
+
+A static pace display measurably debiases judgment. But nobody has shown that effect survives outside a lab, or lasts once the novelty wears off, and nobody has tested it in real-world driving or as a deployed app. That's not a footnote: it's the most consistent, independently-corroborated open question in the literature behind this project, and it's exactly the gap that `lit_review.md`'s original deep dive on this topic flagged as the best opportunity for an original contribution here. Every other finding in this report (the bias is real, pace displays reduce it, risk and fuel both punish high speed) is already well established. Whether the benefit **persists** and **generalizes** to the real world is not.
+:::
+
+This is the load-bearing caveat for the whole project. Herberz, Kacperski and Kutzner (2019) ran the direct follow-up experiment: a video-based highway scenario comparing a static pace display against a newly designed adaptive "Pop-up assistant" that tells drivers, in the moment, exactly how much time a specific deceleration will cost them. Both reduced the bias immediately (pace display *d* = 0.54, pop-up *d* = 1.07), but only the pop-up assistant survived a follow-up phase with no intervention present at all. Pace-display users' bias returned to baseline (not significant, *p* = .26), while pop-up users retained a strong, significant effect (*d* = 0.82, *p* = .002).
+
+```{python}
+#| label: fig-effect-sizes
+#| fig-cap: "Debiasing effect sizes from Herberz, Kacperski & Kutzner (2019). Bars in grey mark conditions that were not statistically significant."
+#| fig-alt: "Bar chart of Cohen's d effect size for four conditions: static pace display immediate (d=0.54, significant), static pace display spillover (not significant, bias returns to baseline), adaptive pop-up assistant immediate (d=1.07, significant), and adaptive pop-up assistant spillover (d=0.82, significant). The adaptive pop-up assistant is the only intervention that retains a strong effect once removed."
+from IPython.display import Image
+Image(filename="figures/fig02_bias_effect_sizes.png")
+```
+
+This single result reframes the whole project's hardest open question: a static gauge helps, but on its own it may not travel with the driver into situations it wasn't shown in. It's not an isolated finding, either. Korteling, Gerritsma and Toet's (2021) systematic review of the broader cognitive-debiasing literature (52 candidate studies, only 12 adequately measuring retention of 14 days or more) found the same pattern generally: passive, single-exposure interventions, exactly what a static pace gauge is, are the weakest category for durability, while repeated and *active/experiential* interventions are the only ones reliably shown to generalize. Morewedge et al. (2015) makes the point clearly: a single gamified training session produced debiasing effects that persisted for months (immediate bias reduction ≥32% for games vs. ≥19% for passive video, with games still ahead at the 8–12 week follow-up). That points toward a different fix than "make it adaptive": make it something the user does, not just glances at.
+
+Two further findings rule out easy alternatives. Peer and Solomon (2012) tested whether years of real-world professional driving experience alone fixes the bias, comparing taxi drivers to ordinary drivers (*N* = 60). Both groups overestimated their average speed by roughly 2×, and while taxi drivers' bias was smaller than car drivers' (2.4× vs. 5.1× on an adjusted bias score), it remained large and significant in both groups. Repeated real-world exposure alone doesn't durably correct the error. Svenson, Gonzalez and Eriksson (2014) tested whether simply prompting people to explicitly calculate the comparison, or to notice a diminishing-returns pattern across successive judgments, would fix it: both techniques helped modestly but neither eliminated the bias. As far as this review can determine, no one has yet tested a pace display of any kind in real-world, on-road driving or as a deployed smartphone app. Every study above, including the two most directly relevant (Peer & Gamliel, 2013; Herberz et al., 2019) and a third independent lab replication using an "inverted-speed" meter in an active driving simulator (Eriksson, Patten, Svenson & Eriksson, 2015), is a lab or simulator study. That gap is this project's clearest path to an original contribution.
+
+## Speed and Crash Risk {#sec-risk}
+
+If the time-saving side of the story is a curve that flattens, the risk side is the mirror image: a curve that steepens. Since Nilsson's original 1980s **Power Model**, the standard formulation has been that fatal crashes scale with roughly the *4th power* of the change in mean traffic speed, serious-injury crashes with the 3rd power, and all-injury crashes with the 2nd power. Large meta-analyses since then (Elvik, 2005: 98 studies, 460 estimates; Elvik et al., 2019: post-2000 international data) confirm the relationship isn't merely correlational (it satisfies standard causal-inference criteria) and that even modest speed reductions produce outsized safety gains: a 10% cut in mean speed is associated with roughly a 34% reduction in fatal crashes.
+
+But the exponent is not a universal constant, and this matters for how the finding should be presented. Cameron and Elvik (2010) show the same nominal relationship is far weaker on urban arterial roads than on rural highways and freeways:
+
+```{python}
+#| label: fig-power-model
+#| fig-cap: "Power Model exponents by road type (Cameron & Elvik, 2010). Higher bars mean crash risk compounds faster for a given percentage speed increase."
+#| fig-alt: "Grouped bar chart with four road-type categories (urban arterial, residential, rural highway, freeway) on the x-axis and three severity levels (fatalities, serious injuries, slight injuries) as grouped bars. Exponents are lowest on urban arterial roads (0.90 to 3.60 across severities) and highest on rural highways (3.19 to 5.90), showing that the same percentage speed increase carries a much larger relative risk increase on rural highways and freeways than on urban arterial roads."
+from IPython.display import Image
+Image(filename="figures/fig03_power_model_road_type.png")
+```
+
+A separate line of work asks whether the Power Model is even the right functional form. Elvik (2013) directly tested it against an **exponential model** using an updated, 526-estimate dataset and found the exponential function fits injury and property-damage crashes better overall, and predicts a *steeper* marginal risk increase at high speed than the power model does (nearly double, at 115 km/h). In plain terms, the "risk accelerates catastrophically at high speed" story is, if anything, *understated* by the classic model rather than exaggerated.
+
+```{python}
+#| label: fig-power-vs-exp
+#| fig-cap: "Two functional forms for the speed–risk relationship (Elvik, 2013), normalized to 100 at 120 km/h. They track closely at moderate speeds but diverge sharply above roughly 90 km/h."
+#| fig-alt: "Line chart comparing the power model (exponent 4.23) and exponential model (speed term 0.069) for relative number of fatal accidents against mean speed from 25 to 120 km/h. Both curves are normalized to 100 at 120 km/h. The two curves nearly coincide below about 90 km/h and diverge increasingly at lower speeds, with the exponential model predicting substantially higher relative risk than the power model as speed decreases from the 120 km/h reference point."
+from IPython.display import Image
+Image(filename="figures/fig04_power_vs_exponential.png")
+```
+
+The clearest, most plain-language number in this cluster comes from a different kind of study altogether. Kloeden et al.'s (1997) Adelaide case-control study (151 crash-involved vehicles matched against 604 controls, using laser-measured free travel speeds) found that in a 60 km/h zone, **the risk of a casualty crash doubles with every 5 km/h driven above the limit**. That's a result independent of the meta-analytic Power Model literature, arrived at through direct crash reconstruction rather than aggregate before/after comparisons. A companion rural-roads study found the relationship steeper still: more than double the risk at +10 km/h above the average traffic speed, and roughly sixfold at +20 km/h, with no evidence of the older "U-shaped" curve (very slow drivers being equally at risk) that 1960s studies had claimed. That older finding is now attributed to a data-aggregation artifact: low-speed intersection crashes contaminating the low end of the distribution.
+
+That aggregation warning generalizes. Imprialou et al. (2016) show that *how* crash data is aggregated can flip the sign of the whole relationship: a "condition-based" model, matching crashes to actual pre-crash traffic conditions, finds the expected positive speed–crash relationship, while the conventional "link-based" approach (annual average speeds per road segment, the method behind most of the studies above) can produce a spuriously *negative* one. Worth stating plainly rather than treating the Power Model tradition as monolithic: it's a real, causal, and probably conservative relationship, but the exact exponent is genuinely disputed and method-sensitive.
+
+## Speed and Fuel Consumption {#sec-fuel}
+
+The fuel side of the argument isn't simply "slower is always cheaper." Measured per unit *distance* (the metric that matters for a trip), fuel consumption is **U-shaped**: high at very low speeds (idling inefficiency), lowest in a band around 50–70 km/h, and then rising steeply as speed climbs into highway territory. Wang et al. (2008), measuring ten passenger cars with a portable emissions system across roughly 13,000 seconds of driving each, located this minimum empirically at about 65 km/h (≈6.0 L/100km for their test vehicle). Orfila et al. (2017) later built a widely used fuel-consumption model (SEFUM) whose efficiency-ratio curve, derived from that same dataset, peaks at essentially the same point (≈50 km/h). The underlying mechanism is aerodynamic: drag force scales with the square of speed, and the power needed to overcome it scales with the cube, so past the efficiency optimum, fuel cost accelerates much faster than speed does. It's the fuel-economy mirror of the crash-risk curve in @sec-risk.
+
+```{python}
+#| label: fig-fuel-sweetspot
+#| fig-cap: "Fuel consumption vs. speed is U-shaped, not monotonically decreasing (schematic curve anchored to Wang et al., 2008's measured minimum; shape corroborated by Orfila et al., 2017)."
+#| fig-alt: "Line chart of fuel consumption in liters per 100 kilometers versus speed in km/h from 15 to 130. The curve is U-shaped, starting around 12 L/100km at low speed, dropping to a minimum of about 6.0 L/100km near 65 km/h (marked with a highlighted point), and rising again to over 10 L/100km by 130 km/h. A shaded band from 50 to 70 km/h marks the empirically observed efficiency zone."
+from IPython.display import Image
+Image(filename="figures/fig05_fuel_sweet_spot.png")
+```
+
+The strongest evidence that pace itself, not just speed, is the operative variable comes from Evans, Herman and Lam's (1976) classic General Motors study of real urban driving in Detroit. Testing sixteen candidate traffic variables against fuel use per distance, they found that **reciprocal mean speed alone (time per unit distance, literally pace) explains 71.4% of the variance**, rising to 82.0% with two additional terms, versus 83.4% for all sixteen variables combined. Their derived relationship, fuel ≈ *k*₁(distance) + *k*₂(time), states plainly that a trip's fuel cost is linear in both distance *and* time spent: a driver who takes longer via low speed pays a fuel penalty through the time term, exactly mirroring the "everyone loses on both ends" shape of the U-curve above. (Their sample was restricted to speeds under about 69 km/h and doesn't directly speak to highway conditions, a scope worth keeping in mind when citing it.)
+
+```{python}
+#| label: fig-variance-explained
+#| fig-cap: "Almost all of the explainable variance in urban fuel consumption per distance comes from one variable: pace (Evans, Herman & Lam, 1976)."
+#| fig-alt: "Bar chart showing cumulative percentage of variance in fuel consumption per distance explained by traffic variables. Pace alone (time over distance) explains 71.4%, adding acceleration work per distance raises it to 75.3%, adding deceleration fraction raises it to 82.0%, and all 16 variables combined explain 83.4%. The chart shows diminishing returns from adding variables beyond pace."
+from IPython.display import Image
+Image(filename="figures/fig06_variance_explained.png")
+```
+
+## Does Feedback Change Behavior? {#sec-feedback}
+
+Showing a driver better information is only useful if it changes what they do. The eco-driving and Intelligent Speed Adaptation (ISA) literature answers this with a consistent, quantifiable pattern: **feedback works, but effectiveness and driver acceptance trade off against each other**. Encouragingly, that trade-off isn't fixed.
+
+A meta-analysis of onboard eco-driving feedback (23 effect sizes, 17 studies; Sanguinetti, 2018) finds a pooled **6.6% fuel-economy improvement** (95% CI 4.9–8.3%), with one important moderator: effect size shrinks with the length of the intervention, the only statistically significant predictor in the analysis. A related fleet study cited in Tu et al.'s (2022) review found savings fade from 4.6% immediately after training to 2.5% ten months later: the same durability problem identified for the time-saving bias in @sec-bias, showing up again in a completely different behavioral outcome.
+
+At the more assertive end, active/mandatory ISA systems are considerably more effective and considerably less liked. Belgium's Ghent trial cut severe speeding on 90 km/h roads from 13.5% to 3.8% of driving time; a 2024 New York City municipal fleet program cut time spent more than 11 mph over the limit by 64%, and by 82% on 50 mph roads. But the Young and Regan review of international ISA trials found the opposite pattern for acceptance: Finland's compulsory system, the *most* effective at cutting excess speed in their comparison, was rated the *least* acceptable of the variants tested. That's the **effectiveness–acceptability paradox**, independently replicated across at least three of the studies reviewed here.
+
+```{python}
+#| label: fig-paradox
+#| fig-cap: "The effectiveness–acceptability paradox: systems that cut speeding the most tend to be the least popular, with adaptive/personalized systems (AVSAS) partially escaping the trade-off."
+#| fig-alt: "Scatter plot with severe-speeding reduction percentage on the x-axis and percent of drivers willing to adopt or purchase the system on the y-axis. Four points are plotted: mandatory active ISA (82% effective, 21% acceptance), Belgium's Ghent active ISA trial (72% effective, 40% acceptance), adaptive personalized ISA called AVSAS (45% effective, 52% acceptance), and informational advisory-only ISA (30% effective, 76% acceptance). The pattern shows an inverse relationship between effectiveness and acceptance, with the adaptive AVSAS system standing above the trend line formed by the other three points."
+from IPython.display import Image
+Image(filename="figures/fig07_effectiveness_acceptability.png")
+```
+
+The encouraging finding is that adaptive, personalized systems can shift this frontier rather than simply picking a point on it. Arhin, Eskandarian et al.'s AVSAS system, an adaptive ISA tuned to the individual driver, drew 52.4% purchase interest versus just 19.0% for a mandatory system, while still measurably reducing speeds. Chada et al.'s (2023) pEDAS system for electric vehicles paired a 10% energy saving with a Technology-Acceptance-Model finding that *perceived usefulness and behavioral control*, not ease of use alone, predicted intent to use the system. That's a template for how the Paceometer's own evaluation could pair a behavior outcome with a validated acceptance measure (see @sec-instruments).
+
+Driver experience also moderates acceptance in ways a one-size-fits-all design would miss. Young et al. (2010) found that inexperienced drivers initially rated a more intrusive, actively supporting ISA system as less acceptable than a simple informational alert, but *reversed that judgment after actually using it*, while experienced drivers preferred the intrusive system both before and after. Stated pre-exposure preferences, in other words, may understate real-world acceptance: an argument for prioritizing hands-on pilots over pure attitude surveys when testing any more assertive version of a pace display.
+
+## Designing the Display {#sec-display}
+
+If the Paceometer is going to occupy real space on a dashboard, the HCI literature on gauge and dashboard design gives fairly direct guidance. Two independent studies (one a general lab task, Liu & Shen 2025, 30 participants/288 trials each; one with professional truck drivers on a driving simulator, Francois et al. 2019, 18 drivers/8 gauge designs) agree that **semicircular and horizontal linear gauges are read faster than circular or vertical ones**, with circular gauges disproportionately penalized under time pressure.
+
+```{python}
+#| label: fig-gauge-shape
+#| fig-cap: "Two independent studies agree: semicircular and horizontal gauge forms are read fastest; circular and vertical forms are slowest."
+#| fig-alt: "Two side-by-side bar charts. Left panel (Liu & Shen, 2025) shows mean reading time in milliseconds for four gauge shapes: semicircle 2253ms, horizontal 2322ms, vertical 2604ms, circular 2830ms, with semicircle and horizontal fastest. Right panel (Francois et al., 2019, truck drivers) shows mean task completion time for horizontal (1442ms) versus vertical (1503ms) gauges, with horizontal faster. Both panels support the same conclusion across different studies and populations."
+from IPython.display import Image
+Image(filename="figures/fig08_gauge_reading_time.png")
+```
+
+The more important, less obvious finding is a **preference–performance mismatch**. Francois et al. (2019) found truck drivers subjectively preferred circular gauges (satisfaction rating 11.17 vs. 4.10 for linear) even though circular gauges performed no better, and in some configurations worse, on objective reading-speed measures. The best-performing design in their study (a linear, pointer-based, horizontally oriented gauge) delivered up to a 280ms faster eyes-on-gauge time, equivalent to roughly 7 meters less distance traveled while looking away from the road at 90 km/h. It was not, however, the design drivers said they liked best.
+
+```{python}
+#| label: fig-preference-mismatch
+#| fig-cap: "Drivers preferred circular gauges even though objective performance was essentially equal (Francois et al., 2019)."
+#| fig-alt: "Two side-by-side bar charts. Left panel shows objective task completion time for circular (about 1470ms) versus linear (about 1423ms) gauges, roughly equal. Right panel shows subjective satisfaction rating, strongly favoring circular (11.17) over linear (4.10) gauges, illustrating a mismatch between what performs well and what drivers say they prefer."
+from IPython.display import Image
+Image(filename="figures/fig09_preference_performance_mismatch.png")
+```
+
+For a pace display specifically, whose native unit (minutes per fixed distance) is itself nonlinear, this suggests a concrete design compromise: a semicircular or horizontal element for the actual numeric readout, nested inside a familiar circular housing so the gauge doesn't look alien on first glance, with coarse (not finely divided) scale markings, which Liu and Shen found read fastest with no loss of accuracy. If the display is ever presented as a head-up display rather than a dashboard element, one more finding is worth carrying forward. Smith, Gabbard and Conley (2016) found HUDs *fail* the standard NHTSA eye-glance safety guideline more often than head-down displays, yet produce measurably *better* driving performance (lane-position variability statistically indistinguishable from a no-secondary-task baseline), because HUDs produce fewer, longer glances rather than more, shorter ones. Any real-world safety validation of a Paceometer HUD should include actual driving-performance metrics, not glance-duration counts alone.
+
+## Evaluating the App {#sec-instruments}
+
+When it comes time to test a Paceometer prototype, no single instrument covers everything a professor would want to see. A short battery of two to four purpose-built instruments does the job better than one long generic survey.
+
+::: {#tbl-instruments}
+
+| Instrument | What it measures | Items | Subscales | Best use here |
+|---|---|---|---|---|
+| **Van der Laan Acceptance Scale** (1997) | Driver acceptance of in-vehicle telematics | 9 | Usefulness, Satisfaction | **Primary outcome measure.** The only instrument purpose-built for this exact product category, and the one used throughout the ISA-acceptance literature in @sec-feedback, enabling direct comparison |
+| **UEQ-S** (Schrepp et al., 2017) | Quick pragmatic + hedonic UX | 8 | Pragmatic quality, Hedonic quality | Fast repeated-measures testing across gauge-design variants; benchmarked against 246 products (N = 9,905) |
+| **Full UEQ** (Laugwitz et al., 2008) | Comprehensive UX | 26 | Attractiveness, Perspicuity, Efficiency, Dependability, Stimulation, Novelty | One-time deep evaluation if the hedonic/engagement dimension becomes its own research question |
+| **SUS** (Brooke, 1996) | General usability | 10 | (unidimensional) | Secondary, widely-benchmarked usability score; correlation with actual task performance is real but small (r² = .047) |
+| **AttrakDiff** (Hassenzahl et al.) | Pragmatic vs. hedonic attractiveness | 28 (10-item short form exists) | PQ, HQ-Identity, HQ-Stimulation, Attractiveness | Alternative to UEQ if the emotional/engagement dimension needs its own dedicated deep-dive |
+| **uMARS** (Stoyanov et al., 2016) | End-user app-quality rating | 20 (+6 "perceived impact") | Engagement, Functionality, Aesthetics, Information quality, Perceived impact | Only if the Paceometer ships as a distinct rateable app; its "perceived impact" subscale maps directly onto behavior-change questions |
+| **NASA-TLX** (Hart & Staveland, 1988) | Subjective workload | 6 subscales | Mental, physical, temporal demand; performance, effort, frustration | Confirms the gauge doesn't add unsafe cognitive/visual load; a driving-specific one-item version exists |
+
+Recommended instrument set for evaluating the Paceometer prototype, synthesized from full reads of the twelve source papers behind each instrument.
+:::
+
+Van der Laan should be the anchor measure: it's short (9 items, roughly two minutes), it was built and repeatedly validated for exactly this category of device, and it lets the app's acceptance numbers sit alongside the ISA-acceptance literature cited in @sec-feedback rather than existing in isolation. One caveat, from a systematic review of 128 studies using the scale (Zoellick et al., 2021, *N* = 6,058): its textbook two-factor structure (usefulness/satisfaction) only replicated in 2 of 10 independent factor analyses that tested it, so run and report your own reliability check rather than assuming it holds. Pair Van der Laan with the UEQ-S for a fast read on the hedonic side ("is this pleasant, not just useful"), and NASA-TLX to confirm that the gauge, competing for visual attention with the road in a driving context, doesn't add dangerous cognitive load relative to a standard speedometer. There's direct precedent for adapting NASA-TLX subscales specifically to vehicle navigation displays (Park & Cha, 1998), which supports doing the same for a pace gauge.
+
+## Open Threads {#sec-open}
+
+Five follow-up questions were run down after the initial review, each closing a gap flagged for future work:
+
+**Is there patented prior art?** A targeted Google Patents search for "reciprocal speed display," "time-per-distance vehicle gauge," and "inverse speedometer" turned up nothing resembling the Paceometer concept. The closest analog found, a 1981 Peugeot/Citroën dashboard patent with scale *width* inversely proportional to speed, varies display geometry rather than the displayed value, so it isn't true prior art. As far as patent literature is concerned, the Paceometer remains an academic research prototype, not a commercialized or protected product.
+
+**Has anyone tested this in the real world?** No. Every study behind this review, including a third independent lab replication using an "inverted-speed" meter (Eriksson, Patten, Svenson & Eriksson, 2015), is a laboratory or driving-simulator study. No field trial or smartphone-app deployment of a pace display turned up in this search. Combined with the durability-gap finding in @sec-durability-gap (a static display's benefit did not survive a within-lab follow-up phase), this is the clearest open research contribution available to this project and the reason a field study is worth doing at all.
+
+**Are there non-US fuel-economy datasets, for international use?** Yes. The EU's per-vehicle CO₂/fuel-consumption registration dataset (European Environment Agency, updated annually under Regulation (EU) 2019/631) is queryable via a SQL REST endpoint, and the UK's Vehicle Certification Agency publishes an equivalent fuel-consumption/CO₂/tax-band database with bulk download (no confirmed public API as of this search). Both are less immediately app-ready than FuelEconomy.gov's clean make/model/year lookup, but usable with additional transformation.
+
+**Has anyone paired an acceptance score with a measured behavior-change outcome?** Yes, twice, directly relevant to how this app's own evaluation should be designed. Chada et al.'s (2023) pEDAS study measured a 10% energy saving *and* Technology-Acceptance-Model / Theory-of-Planned-Behavior survey results in the same 41-participant study. Young et al.'s (2010) ISA study measured an 8.4-percentage-point reduction in speeding time alongside acceptance ratings across driver-experience groups. Both are usable templates for the study design this project will eventually need.
+
+**Are there primary (not secondary/explainer) fuel-consumption-vs-speed papers?** Yes: @sec-fuel above is now built entirely from primary sources (Evans, Herman & Lam, 1976; Wang et al., 2008; Orfila et al., 2017), not the secondary explainer articles the review started with.
+
+## Where This Leaves the Project
+
+Three findings compound. Time saved from speeding flattens hyperbolically; crash risk climbs faster than linearly, with the exponent itself understated by the classic model at high speed; fuel cost forms a U-curve that punishes both crawling and speeding. A pace display measurably improves people's judgment of the first curve. That's a settled, repeatedly replicated finding, not a hypothesis. But the one study that directly compares a static display against a more adaptive alternative found the static version's benefit didn't survive contact with a novel situation, while the adaptive version's did.
+
+::: {.callout-important}
+## The question this project is positioned to answer
+
+As far as this review can determine, nobody has yet asked, outside a lab: **does a pace display keep working when a driver is not being watched, on a road nobody scripted for them?** The debiasing effect itself is settled science. Its durability and its transfer to real-world driving are not, and that combination (a validated mechanism with an untested real-world/field deployment) is exactly what makes this a viable research project rather than a re-confirmation of existing work.
+:::
+
+The practical path this review suggests: build the display around a semicircular or horizontal-linear numeric element (fastest to read, per two independent studies) inside a familiar housing (to avoid the preference penalty circular-gauge research documents), evaluate it with the Van der Laan scale plus NASA-TLX at minimum, and treat the durability question, not the initial debiasing effect which is already well established, as the project's central open hypothesis.
+
+## References {.appendix}
+
+Full abstracts and access URLs for every source below (plus a few background/secondary references not directly cited in this report) are maintained in `lit_review.md` in this project. PDF and markdown copies of each source are kept locally in `pdfs/` and `mds/`, which aren't published in this repository since most of these are copyrighted journal articles.
+
+**The time-saving bias (@sec-bias, @sec-durability-gap)**
+
+- Eriksson, G., Patten, C. J. D., Svenson, O., & Eriksson, L. (2015). Estimated time of arrival and debiasing the time saving bias. *Ergonomics*, 58(12), 1939–1946.
+- Eriksson, G., Svenson, O., & Eriksson, L. (2013). The time-saving bias: Judgements, cognition and perception. *Judgment and Decision Making*, 8(4).
+- Fuller, R. The task-capability interface model of the driving process. *Transportation Research Part F*.
+- Korteling, J. E., Gerritsma, J. Y. J., & Toet, A. (2021). Retention and transfer of cognitive bias mitigation interventions: A systematic literature study. *Frontiers in Psychology*.
+- Marinković, T., Stančić, S., & Dimitrijević, S. (2025). The time-savings and the time-loss bias in traffic. *Sineza*, 6(2), 17–30.
+- Morewedge, C. K., Yoon, H., Scopelliti, I., Symborski, C. W., Korris, J. H., & Kassam, K. S. (2015). Debiasing decisions: Improved decision making with a single training intervention. *Policy Insights from the Behavioral and Brain Sciences*, 2(1), 129–140.
+- Peer, E. (2010). Speeding and the time-saving bias: How drivers' estimations of time saved in higher speed affects their choice of speed. *Accident Analysis & Prevention*, 42(6), 1978–1982.
+- Peer, E. (2010). Exploring the time-saving bias: How drivers misestimate time saved when increasing speed. *Judgment and Decision Making*.
+- Peer, E., & Gamliel, E. (2013). Pace yourself: Improving time-saving judgments when increasing activity speed. *Judgment and Decision Making*, 8(2), 106–115.
+- Peer, E., & Rosenbloom, T. (2013). When two motivations race: The effects of time-saving bias and sensation-seeking on driving speed choices.
+- Peer, E., & Solomon, L. (2012). Professionally biased: Misestimations of driving speed, journey time and time-savings among taxi and car drivers. *Judgment and Decision Making*, 7(2), 165–172.
+- Herberz, M., Kacperski, C., & Kutzner, F. (2019). Reducing the time loss bias: Two ways to improve driving safety and energy efficiency. *Accident Analysis & Prevention*, 131, 8–14.
+- Svenson, O. (2008). Decisions among time saving options: When intuition is strong and wrong. *Acta Psychologica*, 127(2), 501–509.
+- Svenson, O. (2009). Driving speed changes and subjective estimates of time savings, accident risks and braking. *Applied Cognitive Psychology*.
+- Svenson, O., Gonzalez, N., & Eriksson, G. (2014). Modeling and debiasing resource saving judgments. *Judgment and Decision Making*, 9(5).
+
+**Speed and crash risk (@sec-risk)**
+
+- Cameron, M., & Elvik, R. (2010). Nilsson's Power Model connecting speed and road trauma: Applicability by road type and alternative models for urban roads. *Accident Analysis & Prevention*.
+- Elvik, R. (2005). Speed and road safety: Synthesis of evidence from evaluation studies. *Transportation Research Record*, (1908), 59–69.
+- Elvik, R. (2013). A re-parameterisation of the Power Model of the relationship between the speed of traffic and the number of accidents and accident victims. *Accident Analysis & Prevention*.
+- Elvik, R., et al. (2019). Updated estimates of the relationship between speed and road safety at the aggregate and individual levels. *Accident Analysis & Prevention*.
+- European Transport Safety Council. The mathematical relation between collision risk and speed: A summary.
+- Imprialou, M., et al. (2016). Re-visiting crash–speed relationships: A new perspective in crash modelling. *Accident Analysis & Prevention*.
+- Jurewicz, C., et al. (2016). Exploration of vehicle impact speed–injury severity relationships for application in safer road design. *Transportation Research Procedia*.
+- Kloeden, C. N., McLean, A. J., Moore, V. M., & Ponte, G. (1997). *Travelling speed and the risk of crash involvement: Volume 1: Findings*. Australian Office of Road Safety / NHMRC Road Accident Research Unit, University of Adelaide.
+- Kloeden, C. N., Ponte, G., & McLean, A. J. Travelling speed and the risk of crash involvement on rural roads.
+- Nilsson, G. (2004). *Traffic safety dimensions and the Power Model to describe the effect of speed on safety* (Doctoral thesis, Bulletin 221). Lund Institute of Technology, Lund University.
+
+**Speed and fuel consumption (@sec-fuel)**
+
+- Austin, T. C., & Hellman, K. H. (1973). Passenger car fuel economy: Trends and influencing factors (SAE Technical Paper 730790).
+- Evans, L., Herman, R., & Lam, T. (1976). Multivariate analysis of traffic factors related to fuel consumption in urban driving. *Transportation Science*, 10(2), 205–215.
+- Greene, D. L. (1981). Estimated speed/fuel consumption relationships for a large sample of cars. *Energy*, 6(5), 441–446.
+- Mohaimen et al. (2025). Aerodynamic drag analysis of a passenger car for increasing fuel economy. *SciEn Conference Series: Engineering*.
+- Orfila, O., Freitas Salgueiredo, C., Saint Pierre, G., Sun, H., Li, Y., Gruyer, D., & Glaser, S. (2017). Fast computing and approximate fuel consumption modeling for Internal Combustion Engine passenger cars. *Transportation Research Part D: Transport and Environment*, 50, 14–25.
+- Wang, H., Fu, L., Zhou, Y., & Li, H. (2008). Modelling of the fuel consumption for passenger cars regarding driving characteristics. *Transportation Research Part D: Transport and Environment*, 13, 479–482.
+- Experimental testing and simulations of speed variations impact on fuel consumption of conventional gasoline passenger cars (2017). *Transportation Research Part D: Transport and Environment*.
+
+**Does feedback change behavior? (@sec-feedback)**
+
+- Arhin, S., Eskandarian, A., et al. Effectiveness and acceptance of adaptive intelligent speed adaptation systems (AVSAS).
+- Chada, S. K., Görges, D., Ebert, A., Teutsch, R., & Puttige Subramanya, S. (2023). Evaluation of the driving performance and user acceptance of a predictive eco-driving assistance system for electric vehicles. *Transportation Research Part C: Emerging Technologies*.
+- Orlova, E. Active intelligent speed assistance (ISA): A comprehensive review of international field evidence, technology readiness, and policy implications for the United States. SSRN working paper.
+- Sanguinetti, A. (2018). Onboard feedback to promote eco-driving: Average impact and important features (meta-analysis). *Transportation Research Part F: Traffic Psychology and Behaviour*.
+- Tu, R., Xu, J., Li, T., & Chen, H. (2022). Effective and acceptable eco-driving guidance for human-driving vehicles: A review. *International Journal of Environmental Research and Public Health*.
+- Young, K., & Regan, M. A. Intelligent speed adaptation: A review. Monash University Accident Research Centre.
+- Young et al. (2010). Intelligent speed adaptation: Effects and acceptance by young inexperienced drivers. *Accident Analysis & Prevention*.
+
+**Designing the display (@sec-display)**
+
+- Francois, M., et al. (2019). Gauges design for a digital instrument cluster: Efficiency, visual capture, and satisfaction assessment for truck driving. *Applied Ergonomics*.
+- Liu, Y., & Shen, Z. (2025). The effects of dashboard design form on driving information reading performance under different time pressures. *Frontiers in Psychology*.
+- Smith, M., Gabbard, J. L., & Conley Werner, K. (2016). Head-up vs. head-down displays: Examining traditional methods of display assessment while driving.
+- Yang et al. (2022). Dashboard layout effects on drivers' searching performance and heart rate: Experimental investigation and prediction. *Frontiers in Public Health*.
+- Jeong et al. (2013). In-vehicle display HMI safety evaluation using a driving simulator.
+
+**Evaluating the app (@sec-instruments)**
+
+- Brooke, J. (1996). SUS: A "quick and dirty" usability scale.
+- Hart, S. G., & Staveland, L. E. (1988). Development of NASA-TLX (Task Load Index): Results of empirical and theoretical research.
+- Cao, A., et al. (2009). NASA-TLX: Software for assessing subjective mental workload.
+- Hassenzahl, M. AttrakDiff: Determining the attractiveness of exhibitions via pairs of opposites.
+- Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire. Presented at USAB 2008.
+- Park & Cha (1998). [Driving-specific NASA-TLX subscale adaptation.]
+- Peres, S. C., Pham, T., & Phillips, R. (2013). Validation of the System Usability Scale (SUS): SUS in the wild.
+- Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Design and evaluation of a short version of the User Experience Questionnaire (UEQ-S).
+- Stoyanov, S. R., et al. (2016). Development and validation of the user version of the Mobile Application Rating Scale (uMARS). *JMIR mHealth and uHealth*.
+- Van der Laan, J. D., Heino, A., & De Waard, D. (1997). A simple procedure for the assessment of acceptance of advanced transport telematics. *Transportation Research Part C: Emerging Technologies*, 5(1), 1–10.
+- Zoellick, J. C., Kuhlmey, A., Schenk, L., & Blüher, S. (2021). Method-oriented systematic review on the simple scale for acceptance measurement in advanced transport telematics. *PLoS ONE*.
+
+Author names and venues above marked without full detail (e.g. "et al.," missing venue) reflect genuinely unresolved citation fields at the time this review was compiled; see the corresponding entry in `lit_review.md` for the access URL and a note on what's still unconfirmed. Several additional background/secondary sources referenced only in passing (Wikipedia overview pages, government fuel-economy databases, patent records) are catalogued in `lit_review.md` but omitted here since they aren't findings this report draws numbers from.

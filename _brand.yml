@@ -1,0 +1,43 @@
+meta:
+  name: Paceometer
+
+color:
+  palette:
+    navy: "#0B2545"
+    steel-blue: "#1B4E8C"
+    sky: "#4C8FD4"
+    amber: "#E8A23D"
+    coral: "#D9603B"
+    teal: "#2E8B7C"
+    slate: "#5C6B7A"
+    fog: "#F4F6F8"
+    ink: "#1C2530"
+  primary: steel-blue
+  secondary: slate
+  success: teal
+  warning: amber
+  danger: coral
+  foreground: ink
+  background: "#ffffff"
+
+typography:
+  fonts:
+    - family: "Source Sans 3"
+      source: google
+      weight: [400, 500, 600, 700]
+    - family: "Fraunces"
+      source: google
+      weight: [500, 600]
+    - family: "Roboto Mono"
+      source: google
+      weight: [400, 500]
+  base:
+    family: "Source Sans 3"
+    size: 17px
+    line-height: 1.6
+  headings:
+    family: "Fraunces"
+    weight: 600
+    color: navy
+  monospace:
+    family: "Roboto Mono"

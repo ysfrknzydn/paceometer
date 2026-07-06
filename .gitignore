@@ -1,0 +1,14 @@
+.venv/
+.ipynb_checkpoints/
+*_files/
+.quarto/
+.DS_Store
+.Rhistory
+.claude/
+__pycache__/
+*.pyc
+
+# Full text of copyrighted source articles (kept local-only; see lit_review.md
+# for abstracts + links to the same sources).
+pdfs/
+mds/
