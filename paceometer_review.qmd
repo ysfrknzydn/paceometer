@@ -303,79 +303,79 @@ The practical path this review suggests: build the display around a semicircular
 
 ## References {.appendix}
 
-Full abstracts and access URLs for every source below (plus a few background/secondary references not directly cited in this report) are maintained in `lit_review.md` in this project. PDF and markdown copies of each source are kept locally in `pdfs/` and `mds/`, which aren't published in this repository since most of these are copyrighted journal articles.
+Full abstracts and access URLs for every source below (plus a few background/secondary references not directly cited in this report) are maintained in `lit_review.md` in this project. PDF and markdown copies of each source are kept locally in `pdfs/` and `mds/`, which aren't published in this repository since most of these are copyrighted journal articles. Every entry below was checked directly against that source's own title page/header (in `mds/`) rather than taken on faith from secondary listings; a few fields that genuinely aren't legible or stated in the source itself are marked as such rather than guessed.
 
 **The time-saving bias (@sec-bias, @sec-durability-gap)**
 
 - Eriksson, G., Patten, C. J. D., Svenson, O., & Eriksson, L. (2015). Estimated time of arrival and debiasing the time saving bias. *Ergonomics*, 58(12), 1939–1946.
-- Eriksson, G., Svenson, O., & Eriksson, L. (2013). The time-saving bias: Judgements, cognition and perception. *Judgment and Decision Making*, 8(4).
-- Fuller, R. The task-capability interface model of the driving process. *Transportation Research Part F*.
-- Korteling, J. E., Gerritsma, J. Y. J., & Toet, A. (2021). Retention and transfer of cognitive bias mitigation interventions: A systematic literature study. *Frontiers in Psychology*.
+- Eriksson, G., Svenson, O., & Eriksson, L. (2013). The time-saving bias: Judgements, cognition and perception. *Judgment and Decision Making*, 8(4), 492–497.
+- Fuller, R. (2000). The task-capability interface model of the driving process. *Recherche Transports Sécurité*, No. 66, Jan–Mar 2000 (venue uncertain: the file's OCR is heavily garbled and this is the only masthead-like fragment found; this paper is sometimes cited elsewhere as *Transportation Research Part F*, which could not be confirmed from this copy).
+- Korteling, J. E., Gerritsma, J. Y. J., & Toet, A. (2021). Retention and transfer of cognitive bias mitigation interventions: A systematic literature study. *Frontiers in Psychology*, 12, Article 629354.
 - Marinković, T., Stančić, S., & Dimitrijević, S. (2025). The time-savings and the time-loss bias in traffic. *Sineza*, 6(2), 17–30.
 - Morewedge, C. K., Yoon, H., Scopelliti, I., Symborski, C. W., Korris, J. H., & Kassam, K. S. (2015). Debiasing decisions: Improved decision making with a single training intervention. *Policy Insights from the Behavioral and Brain Sciences*, 2(1), 129–140.
 - Peer, E. (2010). Speeding and the time-saving bias: How drivers' estimations of time saved in higher speed affects their choice of speed. *Accident Analysis & Prevention*, 42(6), 1978–1982.
-- Peer, E. (2010). Exploring the time-saving bias: How drivers misestimate time saved when increasing speed. *Judgment and Decision Making*.
+- Peer, E. (2010). Exploring the time-saving bias: How drivers misestimate time saved when increasing speed. *Judgment and Decision Making*, 5(7), 477–488. (Corrects an earlier draft of this list, which had this as a 2011 paper.)
 - Peer, E., & Gamliel, E. (2013). Pace yourself: Improving time-saving judgments when increasing activity speed. *Judgment and Decision Making*, 8(2), 106–115.
-- Peer, E., & Rosenbloom, T. (2013). When two motivations race: The effects of time-saving bias and sensation-seeking on driving speed choices.
+- Peer, E., & Rosenbloom, T. (2013). When two motivations race: The effects of time-saving bias and sensation-seeking on driving speed choices. *Accident Analysis & Prevention*, 50, 1135–1139.
 - Peer, E., & Solomon, L. (2012). Professionally biased: Misestimations of driving speed, journey time and time-savings among taxi and car drivers. *Judgment and Decision Making*, 7(2), 165–172.
 - Herberz, M., Kacperski, C., & Kutzner, F. (2019). Reducing the time loss bias: Two ways to improve driving safety and energy efficiency. *Accident Analysis & Prevention*, 131, 8–14.
 - Svenson, O. (2008). Decisions among time saving options: When intuition is strong and wrong. *Acta Psychologica*, 127(2), 501–509.
-- Svenson, O. (2009). Driving speed changes and subjective estimates of time savings, accident risks and braking. *Applied Cognitive Psychology*.
-- Svenson, O., Gonzalez, N., & Eriksson, G. (2014). Modeling and debiasing resource saving judgments. *Judgment and Decision Making*, 9(5).
+- Svenson, O. (2009). Driving speed changes and subjective estimates of time savings, accident risks and braking. *Applied Cognitive Psychology*, 23, 543–560.
+- Svenson, O., Gonzalez, N., & Eriksson, G. (2014). Modeling and debiasing resource saving judgments. *Judgment and Decision Making*, 9(5), 465–478.
 
 **Speed and crash risk (@sec-risk)**
 
-- Cameron, M., & Elvik, R. (2010). Nilsson's Power Model connecting speed and road trauma: Applicability by road type and alternative models for urban roads. *Accident Analysis & Prevention*.
+- Cameron, M. H., & Elvik, R. (2010). Nilsson's Power Model connecting speed and road trauma: Applicability by road type and alternative models for urban roads. *Accident Analysis & Prevention*, 42, 1908–1915.
 - Elvik, R. (2005). Speed and road safety: Synthesis of evidence from evaluation studies. *Transportation Research Record*, (1908), 59–69.
-- Elvik, R. (2013). A re-parameterisation of the Power Model of the relationship between the speed of traffic and the number of accidents and accident victims. *Accident Analysis & Prevention*.
-- Elvik, R., et al. (2019). Updated estimates of the relationship between speed and road safety at the aggregate and individual levels. *Accident Analysis & Prevention*.
-- European Transport Safety Council. The mathematical relation between collision risk and speed: A summary.
-- Imprialou, M., et al. (2016). Re-visiting crash–speed relationships: A new perspective in crash modelling. *Accident Analysis & Prevention*.
-- Jurewicz, C., et al. (2016). Exploration of vehicle impact speed–injury severity relationships for application in safer road design. *Transportation Research Procedia*.
-- Kloeden, C. N., McLean, A. J., Moore, V. M., & Ponte, G. (1997). *Travelling speed and the risk of crash involvement: Volume 1: Findings*. Australian Office of Road Safety / NHMRC Road Accident Research Unit, University of Adelaide.
-- Kloeden, C. N., Ponte, G., & McLean, A. J. Travelling speed and the risk of crash involvement on rural roads.
-- Nilsson, G. (2004). *Traffic safety dimensions and the Power Model to describe the effect of speed on safety* (Doctoral thesis, Bulletin 221). Lund Institute of Technology, Lund University.
+- Elvik, R. (2013). A re-parameterisation of the Power Model of the relationship between the speed of traffic and the number of accidents and accident victims. *Accident Analysis & Prevention*, 50, 854–860.
+- Elvik, R., Vadeby, A., Hels, T., & van Schagen, I. (2019). Updated estimates of the relationship between speed and road safety at the aggregate and individual levels. *Accident Analysis & Prevention*, 123, 114–122.
+- European Transport Safety Council. (2019). *The mathematical relation between collision risk and speed: A summary* (companion report to ETSC PIN Flash 36, "Reducing speeding in Europe").
+- Imprialou, M.-I. M., Quddus, M., Pitfield, D. E., & Lord, D. (2016). Re-visiting crash–speed relationships: A new perspective in crash modelling. *Accident Analysis & Prevention*, 86, 173–185.
+- Jurewicz, C., Sobhani, A., Woolley, J., Dutschke, J., & Corben, B. (2016). Exploration of vehicle impact speed–injury severity relationships for application in safer road design. *Transportation Research Procedia*, 14, 4247–4256.
+- Kloeden, C. N., McLean, A. J., Moore, V. M., & Ponte, G. (1997). *Travelling speed and the risk of crash involvement, Volume 1: Findings* (Report No. CR 172). NHMRC Road Accident Research Unit, University of Adelaide / Federal Office of Road Safety.
+- Kloeden, C. N., Ponte, G., & McLean, A. J. (2001). *Travelling speed and the risk of crash involvement on rural roads* (Report No. CR 204). Road Accident Research Unit, Adelaide University / Australian Transport Safety Bureau. (Year confirmed from the report itself; previously listed as unconfirmed.)
+- Nilsson, G. (2004). *Traffic safety dimensions and the Power Model to describe the effect of speed on safety* (Doctoral thesis). Traffic Engineering, Lund University.
 
 **Speed and fuel consumption (@sec-fuel)**
 
-- Austin, T. C., & Hellman, K. H. (1973). Passenger car fuel economy: Trends and influencing factors (SAE Technical Paper 730790).
-- Evans, L., Herman, R., & Lam, T. (1976). Multivariate analysis of traffic factors related to fuel consumption in urban driving. *Transportation Science*, 10(2), 205–215.
+- Austin, T. C., & Hellman, K. H. (1973). Passenger car fuel economy: Trends and influencing factors. *SAE Transactions*, 82, 2678–2701 (SAE Technical Paper 730790).
+- Evans, L., Herman, R., & Lam, T. (1976). Multivariate analysis of traffic factors related to fuel consumption in urban driving. *Transportation Science*, 10(2), 205–215. (Stable link: jstor.org/stable/25767825 — this closes a citation gap flagged as open in `lit_review.md`'s follow-up list.)
 - Greene, D. L. (1981). Estimated speed/fuel consumption relationships for a large sample of cars. *Energy*, 6(5), 441–446.
-- Mohaimen et al. (2025). Aerodynamic drag analysis of a passenger car for increasing fuel economy. *SciEn Conference Series: Engineering*.
+- Mohaimen, F. H., Alam, M. M., & Ahmed, T. (2025). Aerodynamic drag analysis of a passenger car for increasing fuel economy. *SciEn Conference Series: Engineering*, 3, 493–498.
 - Orfila, O., Freitas Salgueiredo, C., Saint Pierre, G., Sun, H., Li, Y., Gruyer, D., & Glaser, S. (2017). Fast computing and approximate fuel consumption modeling for Internal Combustion Engine passenger cars. *Transportation Research Part D: Transport and Environment*, 50, 14–25.
 - Wang, H., Fu, L., Zhou, Y., & Li, H. (2008). Modelling of the fuel consumption for passenger cars regarding driving characteristics. *Transportation Research Part D: Transport and Environment*, 13, 479–482.
-- Experimental testing and simulations of speed variations impact on fuel consumption of conventional gasoline passenger cars (2017). *Transportation Research Part D: Transport and Environment*.
+- Experimental testing and simulations of speed variations impact on fuel consumption of conventional gasoline passenger cars (2017). *Transportation Research Part D: Transport and Environment*. (Author list not legible in this copy's header.)
 
 **Does feedback change behavior? (@sec-feedback)**
 
-- Arhin, S., Eskandarian, A., et al. Effectiveness and acceptance of adaptive intelligent speed adaptation systems (AVSAS).
-- Chada, S. K., Görges, D., Ebert, A., Teutsch, R., & Puttige Subramanya, S. (2023). Evaluation of the driving performance and user acceptance of a predictive eco-driving assistance system for electric vehicles. *Transportation Research Part C: Emerging Technologies*.
-- Orlova, E. Active intelligent speed assistance (ISA): A comprehensive review of international field evidence, technology readiness, and policy implications for the United States. SSRN working paper.
-- Sanguinetti, A. (2018). Onboard feedback to promote eco-driving: Average impact and important features (meta-analysis). *Transportation Research Part F: Traffic Psychology and Behaviour*.
-- Tu, R., Xu, J., Li, T., & Chen, H. (2022). Effective and acceptable eco-driving guidance for human-driving vehicles: A review. *International Journal of Environmental Research and Public Health*.
-- Young, K., & Regan, M. A. Intelligent speed adaptation: A review. Monash University Accident Research Centre.
-- Young et al. (2010). Intelligent speed adaptation: Effects and acceptance by young inexperienced drivers. *Accident Analysis & Prevention*.
+- Arhin, S., Eskandarian, A., Blum, J., Delaigue, P., & Soudbakhsh, D. Effectiveness and acceptance of adaptive intelligent speed adaptation systems (AVSAS). (Year/venue not stated in this copy's header.)
+- Chada, S. K., Görges, D., Ebert, A., Teutsch, R., & Puttige Subramanya, S. (2023). Evaluation of the driving performance and user acceptance of a predictive eco-driving assistance system for electric vehicles. *Transportation Research Part C: Emerging Technologies*, 153, 104193.
+- Orlova, E. *Active Intelligent Speed Assistance (ISA): A comprehensive review of international field evidence, technology readiness, and policy implications for the United States* (working paper). Connecticut Transportation Safety Research Center, University of Connecticut. (Year not stated in this copy's header; also archived on SSRN.)
+- Sanguinetti, A. (2018). *Onboard feedback to promote eco-driving: Average impact and important features* (white paper). National Center for Sustainable Transportation, UC Davis. (Corrects an earlier draft of this list, which mis-attributed this to *Transportation Research Part F* — it is an NCST white paper, not a journal article.)
+- Tu, R., Xu, J., Li, T., & Chen, H. (2022). Effective and acceptable eco-driving guidance for human-driving vehicles: A review. *International Journal of Environmental Research and Public Health*, 19, 7310.
+- Young, K., & Regan, M. A. *Intelligent speed adaptation: A review*. Monash University Accident Research Centre. (Year/venue not stated in this copy's header.)
+- Young, K. L., Regan, M. A., Triggs, T. J., Jontof-Hutter, K., & Newstead, S. (2010). Intelligent speed adaptation: Effects and acceptance by young inexperienced drivers. *Accident Analysis & Prevention*, 42, 935–943.
 
 **Designing the display (@sec-display)**
 
-- Francois, M., et al. (2019). Gauges design for a digital instrument cluster: Efficiency, visual capture, and satisfaction assessment for truck driving. *Applied Ergonomics*.
+- Francois, M., Fort, A., Crave, P., Osiurak, F., & Navarro, J. (2019). Gauges design for a digital instrument cluster: Efficiency, visual capture, and satisfaction assessment for truck driving. *International Journal of Industrial Ergonomics*, 72, 290–297. (Corrects an earlier draft of this list, which mis-attributed this to *Applied Ergonomics*.)
 - Liu, Y., & Shen, Z. (2025). The effects of dashboard design form on driving information reading performance under different time pressures. *Frontiers in Psychology*.
-- Smith, M., Gabbard, J. L., & Conley Werner, K. (2016). Head-up vs. head-down displays: Examining traditional methods of display assessment while driving.
-- Yang et al. (2022). Dashboard layout effects on drivers' searching performance and heart rate: Experimental investigation and prediction. *Frontiers in Public Health*.
-- Jeong et al. (2013). In-vehicle display HMI safety evaluation using a driving simulator.
+- Smith, M., Gabbard, J. L., & Conley, C. (2016). Head-up vs. head-down displays: Examining traditional methods of display assessment while driving. In *Proceedings of the 8th International Conference on Automotive User Interfaces and Interactive Vehicular Applications* (AutomotiveUI '16).
+- Yang, H., Wang, Y., & Jia, R. (2022). Dashboard layout effects on drivers' searching performance and heart rate: Experimental investigation and prediction. *Frontiers in Public Health*.
+- Jeong, C., Kim, B., Yu, S., Suh, D., Kim, M., & Suh, M. (2013). In-vehicle display HMI safety evaluation using a driving simulator. *International Journal of Automotive Technology*, 14(6), 987–992.
 
 **Evaluating the app (@sec-instruments)**
 
-- Brooke, J. (1996). SUS: A "quick and dirty" usability scale.
+- Brooke, J. (1996). SUS: A "quick and dirty" usability scale. Digital Equipment Corporation.
 - Hart, S. G., & Staveland, L. E. (1988). Development of NASA-TLX (Task Load Index): Results of empirical and theoretical research.
-- Cao, A., et al. (2009). NASA-TLX: Software for assessing subjective mental workload.
-- Hassenzahl, M. AttrakDiff: Determining the attractiveness of exhibitions via pairs of opposites.
-- Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire. Presented at USAB 2008.
+- Cao, A., Chintamani, K. K., Pandya, A. K., & Ellis, R. D. (2009). NASA-TLX: Software for assessing subjective mental workload. *Behavior Research Methods*, 41(1), 113–117.
+- Hassenzahl, M., & Schmid, T. AttrakDiff: Determining the attractiveness of exhibitions via pairs of opposites. (Year/venue not stated in this copy's header.)
+- Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire. Presented at USAB 2008 (Springer).
 - Park & Cha (1998). [Driving-specific NASA-TLX subscale adaptation.]
-- Peres, S. C., Pham, T., & Phillips, R. (2013). Validation of the System Usability Scale (SUS): SUS in the wild.
-- Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Design and evaluation of a short version of the User Experience Questionnaire (UEQ-S).
-- Stoyanov, S. R., et al. (2016). Development and validation of the user version of the Mobile Application Rating Scale (uMARS). *JMIR mHealth and uHealth*.
+- Peres, S. C., Pham, T., & Phillips, R. (2013). Validation of the System Usability Scale (SUS): SUS in the wild. *Proceedings of the Human Factors and Ergonomics Society 57th Annual Meeting*, 192–196. (Not a journal article, as an earlier draft of this list implied.)
+- Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Design and evaluation of a short version of the User Experience Questionnaire (UEQ-S). *International Journal of Interactive Multimedia and Artificial Intelligence*.
+- Stoyanov, S. R., Hides, L., Kavanagh, D. J., & Wilson, H. (2016). Development and validation of the user version of the Mobile Application Rating Scale (uMARS). *JMIR mHealth and uHealth*, 4(2), e72.
 - Van der Laan, J. D., Heino, A., & De Waard, D. (1997). A simple procedure for the assessment of acceptance of advanced transport telematics. *Transportation Research Part C: Emerging Technologies*, 5(1), 1–10.
-- Zoellick, J. C., Kuhlmey, A., Schenk, L., & Blüher, S. (2021). Method-oriented systematic review on the simple scale for acceptance measurement in advanced transport telematics. *PLoS ONE*.
+- Zoellick, J. C., Kuhlmey, A., Schenk, L., & Blüher, S. (2021). Method-oriented systematic review on the simple scale for acceptance measurement in advanced transport telematics. *PLoS ONE*, 16(3), e0248107.
 
-Author names and venues above marked without full detail (e.g. "et al.," missing venue) reflect genuinely unresolved citation fields at the time this review was compiled; see the corresponding entry in `lit_review.md` for the access URL and a note on what's still unconfirmed. Several additional background/secondary sources referenced only in passing (Wikipedia overview pages, government fuel-economy databases, patent records) are catalogued in `lit_review.md` but omitted here since they aren't findings this report draws numbers from.
+Entries still marked "not stated in this copy's header" reflect genuinely unresolved fields even after checking the source directly (a missing masthead, a preprint with no assigned venue, or OCR loss on the title page) rather than an unchecked guess; see the corresponding entry in `lit_review.md` for the access URL. Several additional background/secondary sources referenced only in passing (Wikipedia overview pages, government fuel-economy databases, patent records) are catalogued in `lit_review.md` but omitted here since they aren't findings this report draws numbers from.
