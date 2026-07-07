@@ -4,22 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-A literature-review project for an app called "Paceometer" that the user is building with a professor over the summer. There are two deliverables, not one:
+A literature-review project for an app called "Paceometer" that the user is building with a professor over the summer. There are three deliverables, not one:
 
 - **`lit_review.md`** — the working bibliography: abstracts, URLs, and access notes for every source, organized by topic cluster. This is a reference document, not prose to be read start-to-finish.
 - **`paceometer_review.qmd`** (renders to `paceometer_review.html`) — a polished, professor-facing Quarto report that synthesizes the bibliography into a readable narrative with figures and one interactive tool. This is the actual thing the user presents.
+- **`research_plan.qmd`** (renders to `research_plan.html`) — a forward-looking, prescriptive plan for the remaining summer weeks (an app-build track plus an experiment-design/IRB track), meant to be compared against the user's and professor's existing project roadmap. Not a synthesis of the literature. See "`research_plan.qmd` conventions" below.
 
 Treat these as separate outputs with separate rules (below), not as drafts of each other.
 
 ## Commands
 
-Render the report (from repo root):
+Render a report (from repo root; substitute `research_plan.qmd` for the other report):
 ```bash
 source .venv/bin/activate
 quarto render paceometer_review.qmd
 ```
 
-Preview with live reload (also required to see the interactive OJS tool — see caveat below):
+Preview with live reload (also required to see `paceometer_review.qmd`'s interactive OJS tool — see caveat below):
 ```bash
 source .venv/bin/activate
 quarto preview paceometer_review.qmd
@@ -32,7 +33,7 @@ cd scripts && python make_figures.py
 ```
 This writes `fig01_*.png` … `fig09_*.png` into `figures/`, which the `.qmd`'s Python code cells (`echo: false`, `IPython.display.Image`) load by relative path. Figure numbering is meaningful (matches citation order in the report) — if you add a figure, extend the sequence rather than renumbering existing ones, since captions/alt-text reference specific fig numbers in prose.
 
-**Caveat on viewing the rendered HTML**: opening `paceometer_review.html` directly via `file://` (double-click in Finder) renders everything *except* the live speed-slider tool in the durability-gap section — Chrome/Safari block the ES-module import (`import("https://esm.sh/@observablehq/plot@0.6")`) that OJS cell depends on when loaded from `file://`. Serve it (`quarto preview`, or `python3 -m http.server`) to see that piece working.
+**Caveat on viewing the rendered HTML**: opening `paceometer_review.html` directly via `file://` (double-click in Finder) renders everything *except* the live speed-slider tool in the durability-gap section — Chrome/Safari block the ES-module import (`import("https://esm.sh/@observablehq/plot@0.6")`) that OJS cell depends on when loaded from `file://`. Serve it (`quarto preview`, or `python3 -m http.server`) to see that piece working. `research_plan.html` has no OJS cells and opens fine directly from disk.
 
 ## Architecture
 
@@ -42,6 +43,7 @@ This writes `fig01_*.png` … `fig09_*.png` into `figures/`, which the `.qmd`'s 
 - **`scripts/make_figures.py`** — the only source of truth for the report's charts. Every number plotted here was cross-checked against the primary source text in `mds/` (or the original PDF) before being committed to a chart — see the inline comment above the Section 4 fuel-economy figure for a specific example where a published equation, taken at face value, produced physically impossible values (a units-mismatch issue in the source paper, not a transcription error) and was replaced with a clearly-labeled illustrative curve instead. **Do not add a new figure from a number you haven't personally verified against the source text** — a plausible-sounding fork/agent summary is not sufficient grounding for something that will be presented to a professor.
 - **`_brand.yml`** — Quarto brand file (colors, fonts), wired in via `format.html.brand: _brand.yml` in the `.qmd`'s YAML.
 - **`.venv/`** — Python env with matplotlib/pandas/numpy/jupyter, required both for `make_figures.py` and for Quarto's Python code cells at render time. Activate it before running either `quarto render` or the figure script.
+- **`research_plan.qmd`** has no Python/OJS code cells and doesn't read from `mds/`/`figures/` — it's pure Quarto markdown plus one static table. It cross-references `paceometer_review.qmd` by linking directly to anchors in the rendered `paceometer_review.html` (e.g. `[durability-gap section](paceometer_review.html#sec-durability-gap)`), not Quarto's `@sec-` syntax — `@sec-` cross-references only resolve within the same rendered document, not across separately-rendered `.qmd` files.
 
 ## `lit_review.md` conventions
 
@@ -59,13 +61,23 @@ This is a synthesis document — unlike `lit_review.md`, prose here is expected 
 
 The report's `## References` section lists full citations (authors/year/venue/volume/pages), organized by the report's own section headers, not `lit_review.md`'s section numbers. When adding or correcting a citation there, verify author list, year, and venue directly against that source's own title page/header in `mds/` — don't trust a secondary listing (including `lit_review.md`'s own fields, several of which were originally marked `unconfirmed`) without checking. Where a field genuinely isn't stated or legible in the source itself (a masthead-less preprint, OCR loss on the title page), say so explicitly in the reference entry rather than guessing or dropping the source. Batch this kind of verification across parallel forks when checking many sources at once — it's local-file-only work, well suited to the fork pattern noted below.
 
+## `research_plan.qmd` conventions
+
+Unlike the other two files, this is a forward-looking, prescriptive plan, not a synthesis of the literature: two tracks (app development, experiment design & IRB) running in parallel across a fixed week count, a week-by-week milestones table, proof-of-concept exit criteria, and an "Open Questions for the Professor" section that doubles as a discussion agenda rather than a monologue.
+
+**Voice**: written as if the user is the author, not Claude and not an outside advisor describing the project to "you and your professor." Default register is first-person-plural ("we"/"our") for joint work with the professor; second person ("you") is used only inside "Open Questions for the Professor," which is explicitly addressed to him. Don't reintroduce phrasing that narrates the project from outside (e.g. "the roadmap you and your professor sketched out") anywhere else in the document.
+
+**Budget**: the project currently has zero funding beyond whatever is free for a GW student plus the user's personal Claude subscription. Treat this as a standing constraint on any tool, service, or platform recommendation in this document (it's why Phase 1 recommends a PWA over a native iOS app, and why Phase 2 defaults to a fixed reference speed instead of a metered speed-limit API), not a one-off caveat to check once.
+
+**Realism**: neither the user nor the professor has built an app before, and implementation leans heavily on Claude Code. The week-by-week pacing was deliberately built around that (see the milestones table's own framing paragraph) rather than an experienced-developer's timeline. If you revise the plan, re-check pacing against that constraint instead of assuming it still holds.
+
 ## Repository / publishing
 
 This project is a public GitHub repo (`ysfrknzydn/paceometer`), initialized partway through the project's life — check `git status`/`git log` before assuming a clean-slate history. `pdfs/` and `mds/` are gitignored and must stay that way: most of the 54 sources are copyrighted journal articles, and `mds/` is a full-text derivative of the same. `.venv/` and `.claude/` are also gitignored as local-only. Only commit when explicitly asked; when asked, follow the repo's existing commit-message style (see `git log`).
 
-## Prose style in `paceometer_review.qmd`
+## Prose style in the `.qmd` reports
 
-The report's prose was deliberately rewritten with the `humanizer` skill to remove AI-sounding patterns. Concretely: no em dashes used as clause separators anywhere in the prose (en dashes for numeric ranges and compound terms like "effectiveness–acceptability paradox" are fine and were kept), no negative-parallelism constructions ("not just X — it's Y"), minimal boldface reserved for genuinely load-bearing terms/numbers rather than whole-sentence emphasis. If you edit or add prose here, keep it consistent with that pass rather than reintroducing those patterns.
+Both `paceometer_review.qmd` and `research_plan.qmd`'s prose were deliberately rewritten with the `humanizer` skill to remove AI-sounding patterns. Concretely: no em dashes used as clause separators anywhere in the prose (en dashes for numeric ranges and compound terms like "effectiveness–acceptability paradox" are fine and were kept), no negative-parallelism constructions ("not just X — it's Y") or tailing negations ("no polish yet"), minimal boldface reserved for genuinely load-bearing terms/numbers rather than whole-sentence emphasis. If you edit or add prose in either file, keep it consistent with that pass rather than reintroducing those patterns.
 
 ## Operational notes
 
