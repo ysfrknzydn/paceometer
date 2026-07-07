@@ -1,0 +1,152 @@
+---
+title: "The Paceometer: Summer Research & Development Plan"
+subtitle: "A launch pad for comparison against the initial project roadmap"
+date: 07/07/2026
+format:
+  html:
+    brand: _brand.yml
+    toc: true
+    toc-depth: 3
+    toc-title: "Contents"
+    number-sections: true
+    code-fold: true
+    code-tools: false
+    smooth-scroll: true
+    fig-cap-location: bottom
+    embed-resources: true
+    linkcolor: "#1B4E8C"
+execute:
+  echo: false
+  warning: false
+  freeze: false
+---
+
+## Purpose & How to Read This Document {#sec-purpose}
+
+This is a working plan for the seven weeks remaining before the end of the summer, not a finished proposal. It exists specifically so it can be set next to the initial ideation of the project and checked against it: where the two agree, that's confirmation; where they diverge, that's the conversation worth having before development starts. @sec-open-questions collects the specific points worth raising in that conversation.
+
+The plan covers two tracks that run in parallel rather than in sequence: building a working proof-of-concept app (@sec-track-a) and designing the experiment that will eventually test it, including the IRB approval it depends on (@sec-track-b). They run together deliberately. IRB review has a lead time neither of us controls, and waiting until the app is finished before starting that process would burn weeks that are better spent overlapping the two. 
+
+What follows is scoped tightly to the summer. A working proof-of-concept app, not the full 50-person study, is what needs to exist by the end of week seven. The study itself, and everything past it, funding, integration with existing map apps, is left for the year ahead and out of scope here.
+
+## The Research Question {#sec-question}
+
+Stripped to one sentence: **can a real-time pace display reduce speeding in real-world driving, and does it need to be adaptive rather than static to keep working once the novelty wears off?**
+
+That second clause isn't decoration. The companion report's [durability-gap section](paceometer_review.html#sec-durability-gap) found that a static pace display measurably corrects the time-saving bias in the moment, but the one study that tested whether the effect survives a follow-up scenario with no intervention present found that it doesn't: the bias returns to baseline. An adaptive alternative, a "Pop-up assistant" that intervenes at the moment of the decision rather than displaying a static number, kept a strong effect where the static version's disappeared (Herberz, Kacperski & Kutzner, 2019). Nobody has tested either design in real-world driving or as a deployed app: the search for a field study or a shipping app version of this idea came up empty (`lit_review.md`, section 7c). That absence is what makes this project's research question answerable and original at the same time.
+
+The summer's job is not to answer this question. It's to build the instrument capable of answering it: a working app, plus an experiment design and IRB approval, ready to hand to about 50 real drivers in the fall. @sec-track-a and @sec-track-b are that instrument.
+
+## Track A: App Development {#sec-track-a}
+
+Neither of us has built an app before, there's no funding behind this phase of the project, and the summer's implementation work leans heavily on Claude Code, an existing personal subscription rather than a project expense, to write the actual code. That combination shapes the stack choice in @sec-phase1 as much as the pacing in @sec-milestones: everything below has to run on tools that are free for a GW student to use, which matters here as much as how easy they are to learn. And even free, fast-to-write code doesn't remove the friction of a first build: getting comfortable with a new toolchain, testing on a real device, and iterating from actual driving all still take wall-clock time no matter how fast the code itself gets written.
+
+### The MVP funnel applied to Paceometer {#sec-mvp-funnel}
+
+Rather than starting from a feature list, Track A uses a five-stage funnel for scoping the build: define the core function, map the core loop, add only accessory features that serve that loop, check the surface area, then decide on a retention hook. Each stage acts as a gate: a feature that doesn't pass its stage's test doesn't make it into the summer's build.
+
+| Stage | Applied to Paceometer | Gate |
+|---|---|---|
+| **Core Function** | Show the driver, at a glance, whether their current speed is inside or outside the zone where extra speed still buys meaningful time. | Sayable in one sentence, or stop. |
+| **Core Loop** | Glance at the display, see whether the current speed is in or out of the zone, ease off or hold, display confirms the new state. | Has to resolve in a few seconds per glance, not a sustained look. |
+| **Accessory Features** | An end-of-trip "time saved today" summary. | Kept only if it reinforces the core loop; historical trends, streaks, and car-specific fuel tuning are cut from the POC on this test. |
+| **Surface Area Check** | About four screens: consent/onboarding, the live dashboard, trip summary, settings/privacy. | Comfortably under the 5–7 screen cap by design, not by trimming later. |
+| **Retention Hook** | An honestly-framed "days driven with Paceometer this week" indicator, not a streak or an unfinished-progress mechanic. | See the caveat below before building this. |
+
+The core loop's few-second constraint isn't arbitrary: it lines up with the NHTSA visual-manual glance-duration guidelines already catalogued in `lit_review.md`, section 5 Part B, which makes it a hard constraint on any in-car display rather than a design preference.
+
+::: {.callout-important}
+## The retention hook's ethical catch
+An "unfinished state" hook is a standard product-growth technique. It's also exactly the kind of engagement mechanic that can read as manipulative, especially for an app whose whole pitch depends on the user trusting it with their location, a concern already raised for this project (@sec-privacy). The retention mechanic here should serve the research question directly: sustaining engagement long enough to test whether the debiasing effect survives past the novelty period is itself the durability-gap question. If the mechanic is behavioral enough to plausibly change how someone drives on its own, it needs disclosure in the IRB consent language as part of the intervention rather than sitting outside it as a neutral UX choice. See @sec-open-questions.
+:::
+
+### Phase 1: static pace POC {#sec-phase1}
+
+The first build is the literal Peer & Gamliel display: real GPS, a real-time pace and optimal-zone readout, with no networking and no storage layer at all. Given the starting point described above, the plan favors a mobile web app, a PWA installed to the home screen from Safari, over a native iOS build. Claude Code writes web code fast and reliably, and a PWA skips almost every piece of first-app friction and first-app cost that would otherwise eat into a zero-budget summer: no Xcode installation, no Apple Developer Program enrollment (a $99/year fee neither of us has budget for), no code-signing or provisioning profiles, no App Store or TestFlight review to wait on. Hosting costs nothing either: a PWA with no backend and no server-side storage runs fine on a free static host like GitHub Pages, which comes with a GW student's existing GitHub account. A browser's geolocation API reads live GPS just as well as a native app needs for this purpose, and running fully client-side makes "no data leaves the device" (@sec-privacy) enforceable just by never writing a network call, rather than something to trust about compiled code that's harder for either of us to audit. The same web app runs on Android with no extra work, which also softens the Android-priority question in @sec-open-questions. The one real tradeoff worth naming: a PWA is more limited than a native app at tracking location in the background or with the screen off, but the intended use, mounted and glanced at with the screen on for the whole drive, doesn't lean on that capability, so the cost is small here.
+
+Both of us currently carry iPhones, so testing happens on iOS Safari first, but nothing about the approach itself is iOS-specific. The intended physical setup mirrors how people already use a phone in a car: mounted on a vent or dash mount the same way a maps app would be, glanced at rather than held. That framing matters for the surface-area and core-loop decisions above as much as for the hardware itself. Static-first is a deliberate choice: it's the fastest path to a real, working app on a real phone, it directly replicates the founding result this whole project is built on (@sec-question), and it gives Track B something concrete to design the fall study's control and static-arm conditions around while Phase 3's adaptive version is still being built.
+
+### Phase 2: on-device aggregate metrics {#sec-phase2}
+
+Once Phase 1's live display is working, this phase adds the layer that makes the fall experiment possible without breaking the "GPS data only, never stored" commitment. Raw location points are used to compute derived statistics on the device, in memory, in real time, things like the percentage of a trip spent inside the optimal zone or the average speed relative to a baseline, and then the raw points are discarded. Only those aggregate numbers ever persist or leave the device, and only with the user's knowledge (@sec-privacy).
+
+This is the mechanism that reconciles two things that otherwise pull against each other: a privacy commitment specific enough to answer that trust concern directly, and an experiment that still needs some form of objective behavioral evidence rather than self-report alone. One open technical question to resolve during this phase: whether "the optimal zone" is defined against a fixed reference speed (as the companion report's interactive tool does, @sec-question) or against the posted speed limit of the actual road being driven. The second option needs a speed-limit lookup, and the well-known ones (Google's Roads API, HERE, TomTom) are metered services with no free tier generous enough for continuous use during real driving, which doesn't fit a zero-budget summer. A free alternative exists in OpenStreetMap's speed-limit tags via the Overpass API, but coverage and accuracy vary by road and would need real testing before being trusted for this. Absent that, a fixed reference speed is the safer, cheaper default to build against now.
+
+### Phase 3: adaptive feedback prototype (stretch) {#sec-phase3}
+
+The static display is the fastest thing to ship, but it isn't the thing the fall experiment actually needs to test. Herberz et al.'s (2019) "Pop-up assistant", feedback that intervenes at the moment of a speed decision rather than sitting as an ambient number, is the design that survived the durability follow-up where the static display didn't (@sec-question). Building a rough version of that, adaptive enough to give the fall study a real third arm instead of forcing a two-arm design by default, is this phase's goal; polish can come later.
+
+This phase is explicitly time-boxed rather than open-ended. It starts once Phases 1 and 2 are solid, and if it isn't in workable shape by the end of the seven weeks, the plan falls back to a two-arm fall study (control vs. static) with the adaptive version carried into the following year rather than rushed. Which of those two outcomes to plan around is one of the decisions worth raising now rather than later (@sec-open-questions).
+
+### Internal dogfooding {#sec-dogfood}
+
+Before anyone else touches this app, it needs to survive real drives: mounted, glanced at, used the way an actual participant would use it, not tested from a desk. This phase is where the core-loop and surface-area decisions get checked against reality rather than theory, where the aggregate-metrics pipeline (@sec-phase2) gets checked against numbers that actually make sense for the trips just driven, and where basic reliability questions get answered: does it crash, does it drain the battery unreasonably, does it interfere with a navigation app running at the same time. Nothing moves toward the fall's 50-person rollout until this phase turns up no blocking issues (@sec-exit-criteria).
+
+## Track B: Experiment Design & IRB {#sec-track-b}
+
+### Draft design for the fall rollout {#sec-experiment-design}
+
+The leading candidate is a three-arm design: a control group using their normal speedometer, a group using the static pace display, and a group using the adaptive version, drawn from roughly 50 George Washington University students and faculty who drive regularly, recruited within the department. This is the design that actually answers the project's research question rather than a narrower version of it: it would be, as far as the literature review can tell, the first real-world test of whether the durability gap between static and adaptive pace feedback holds up outside a lab or simulator (`lit_review.md`, section 7c). It depends on Phase 3 producing a workable adaptive prototype; if that doesn't happen in time, the fallback is a two-arm design (control vs. static) with the adaptive comparison deferred to next year, which is a real fork worth deciding with the professor rather than assuming (@sec-open-questions).
+
+Each participant would drive with their assigned condition over a period of real-world driving long enough to see whether an initial effect holds up once the app stops being novel, not a single session or a single day. That duration is the whole point of the design: the durability-gap literature's central finding is specifically about what happens after the novelty wears off, so a design that only captures the first-use effect would just replicate the existing lab result rather than extend it.
+
+### Outcome measures {#sec-outcomes}
+
+Primary outcomes come straight from the Phase 2 aggregate-metrics pipeline: percentage of trip time spent inside the optimal zone, average speed relative to baseline, and similar derived statistics, all computed on-device with no raw trace ever collected centrally.
+
+Secondary outcomes lean on validated instruments already catalogued in `lit_review.md`, section 6, rather than inventing new ones: the Van der Laan acceptance scale (fast, and already the standard for ISA-adjacent systems), the System Usability Scale, and Technology Acceptance Model / Theory of Planned Behavior items for behavioral intention. Pairing an objective driving-behavior measure with a validated acceptance framework isn't a novel choice; it's the same structure Chada et al. (2023) used to evaluate their eco-driving assistance system (`lit_review.md`, section 7e), and it's worth following that precedent deliberately rather than reinventing the methodology. It also lets the study ask a question that doesn't answer itself: whether the version people say they trust and like is also the version that measurably changes how they drive, since those two things diverged by driver experience level in at least one related ISA study already in the review.
+
+A third, smaller measure worth considering is a direct replication of Peer and Gamliel's original time-saved judgment questions, administered before and after the driving period. That would tie the fall study's behavioral outcome back to the original cognitive-bias result the whole project starts from, in addition to the speeding-behavior data collected elsewhere.
+
+### Privacy and consent architecture {#sec-privacy}
+
+We raised a specific concern in the original conversation: that people might not trust how their location data is being used. That concern deserves a specific answer, not a general privacy policy. The architecture here is that raw GPS points are processed on-device and never written to persistent storage or transmitted anywhere; the only data that ever leaves the phone is the aggregate, de-identified summary statistics described in @sec-phase2 and @sec-outcomes, and only after explicit, plain-language consent, not a legal boilerplate paragraph nobody reads.
+
+The practical consequence worth stating directly to participants: there is no server-side location log to be misused, leaked, or subpoenaed, because one is never created in the first place. That's a stronger claim than "we protect your data," and it should be presented to prospective participants as a specific feature of the study design rather than a compliance checkbox buried in a consent form.
+
+One more thing worth naming here, even though it isn't a summer problem: proving the app is trustworthy with data doesn't by itself give anyone a reason to install it. The fall study sidesteps this because the roughly 50 participants are recruited directly rather than expected to find the app on their own, but any version of this beyond that sample runs into it head-on. A minutes-per-10-miles readout is not an obviously compelling pitch next to what a stock speedometer or an existing map app already shows, and solving the trust problem above is a separate matter from why a stranger would seek this out in the first place. This sits past the funding and major-map-app conversation in @sec-open-questions. The summer's proof of concept doesn't need to answer it, but it deserves a place in the plan now, so it doesn't quietly get treated as solved just because the recruited study works.
+
+### IRB workstream {#sec-irb}
+
+Running a study on roughly 50 GWU students and faculty is human-subjects research, and it needs IRB approval before it can start, not as a formality but as a real gate on the fall timeline. That approval process has a lead time that is unpredictable, which is the reason this workstream starts in week one rather than after the app is finished (@sec-milestones): an IRB application doesn't require a shipped product, only a well-specified protocol, and Track B can produce that in parallel with Track A's build.
+
+The privacy and consent architecture in @sec-privacy, no raw location data collected, aggregate metrics only, explicit consent, plausibly qualifies this study for an expedited or minimal-risk review path, since there's no deception, no physical intervention, and no persistently stored sensitive data. That's a determination for GWU's IRB to make, not an assumption to build the timeline around before submitting. Professor Helveston's fall teaching schedule is a real constraint worth naming here too: getting the application drafted and submitted before that transition, ideally within this seven-week window, protects against losing his bandwidth right when the study most needs sign-off.
+
+## Week-by-Week Milestones {#sec-milestones}
+
+The two tracks run side by side deliberately (@sec-purpose); neither should wait on the other to make progress. The pace below assumes a first-time app build, leaning on Claude Code for the actual coding, so it's deliberately conservative in two places: week 1 keeps tooling overhead low rather than front-loading a steep learning curve, and week 5 gives dogfooding a full week of its own instead of squeezing it in alongside other work, since a first build tends to surface more friction than experience would predict.
+
+| Week | Track A: App | Track B: Experiment & IRB |
+|---|---|---|
+| 1 | Core function and core loop defined (@sec-mvp-funnel); Claude Code scaffolds a bare page that reads and displays live GPS speed in the browser, tested on a phone over local wifi. Tooling overhead stays low by design (@sec-phase1). | Draft experiment design v1 (candidate arms, sample plan); start drafting the IRB application. |
+| 2 | Pace and optimal-zone calculation implemented and displayed live; installed to the home screen as a standalone app; first rough test drive with it mounted. | Select outcome instruments (Van der Laan, SUS, TAM/TPB); draft consent and privacy language (@sec-privacy). |
+| 3 | Static pace POC (@sec-phase1) solid and drivable; on-device aggregate-metrics layer (@sec-phase2) underway. | IRB application complete internally, pending review before submission. |
+| 4 | Aggregate-metrics layer (@sec-phase2) logging plausible numbers across test drives; surface-area check pass, trimmed to about four screens. | Submit the IRB application. |
+| 5 | Internal dogfooding (@sec-dogfood): real drives, bug fixes, retention-hook design finalized. Left unrushed given this is a first build. | Respond to any IRB revision requests; refine the ~50-person recruitment plan. |
+| 6 | Adaptive feedback prototype (@sec-phase3) attempted, time-boxed; if it's not workable by the end of the week, the two-arm fallback (@sec-open-questions) is confirmed instead. | Finalize fall rollout logistics: recruitment messaging, consent-flow walkthrough. |
+| 7 | Final POC build frozen and packaged for handoff; buffer for anything that slipped from earlier weeks. | Check in on IRB approval status; package the experiment protocol and consent materials alongside this document. |
+
+: Seven-week plan for the two tracks running in parallel, paced for a first-time build {#tbl-milestones}
+
+## Proof-of-Concept Exit Criteria {#sec-exit-criteria}
+
+By the end of week seven, "we proved this is possible" means, concretely:
+
+- The app runs reliably as an installed home-screen web app on a real iPhone, mounted the way a navigation app would be, computing and displaying pace and optimal-zone status in real time from live GPS.
+- The on-device aggregate-metrics pipeline (@sec-phase2) produces sane, verified numbers across multiple real test drives, with zero raw location data ever persisted or transmitted off the device.
+- At least a rough adaptive-feedback prototype exists (@sec-phase3), or, if it doesn't, the fallback two-arm fall design has been explicitly confirmed rather than left as a gap.
+- Internal dogfooding (@sec-dogfood) turned up no blocking usability issues: the app doesn't crash, doesn't meaningfully drain the battery, and doesn't interfere with a navigation app running alongside it.
+- The draft experiment protocol, outcome measures, and consent/privacy materials (@sec-track-b) are complete and ready for the professor's review.
+- The IRB application has been submitted. Approval itself isn't required by week seven, since that timeline isn't fully in our control, but submission is.
+
+## Open Questions Yet To Be Decided {#sec-open-questions}
+
+This document is meant as the start of a conversation rather than a final handoff (@sec-purpose). These are the specific points worth raising directly:
+
+1. **Two-arm or three-arm fall design.** If the adaptive prototype (@sec-phase3) isn't solid by week seven, is a two-arm control-vs-static study worth running as-is, or better to wait a semester and run the full three-arm version once adaptive is ready?
+2. **Android priority.** The PWA approach (@sec-phase1) means Android support is nearly free once the app works on iOS, since it's the same web app either way. Worth confirming that's still true once real testing starts, or does the fall study's ~50-person sample skew iOS-heavy enough that it's a non-issue regardless?
+3. **The funding and major-map-app pathway.** You mentioned pursuing funding or approaching major map apps if this works. Is that a conversation for later this fall, or something to start laying groundwork for now, in parallel with the study itself?
+4. **Retention-hook ethics.** Should the retention mechanic (@sec-mvp-funnel) be treated as part of the disclosed intervention in the IRB submission, or is it minor enough to leave out of that conversation?
+5. **Recruitment support.** Do you have departmental contacts who could speed up reaching the ~50-person sample once IRB approval comes through, given the tight window between approval and the study needing to actually run?
+6. **Adoption motivation.** Beyond the roughly 50 people recruited directly for the fall study, what gives someone an actual reason to download and keep using this (@sec-privacy)? Trusting the app with their data is a precondition, but it's a separate question from whether they want it in the first place. This isn't a summer problem, but it deserves an answer before pursuing the funding or major-map-app pathway in question 3.
+7. **Participant incentives.** With no funding right now, the fall study likely has to rely on goodwill recruitment (department colleagues, students genuinely interested in the project) rather than paid incentives. Is that realistic for reaching about 50 people and keeping them through a multi-week driving period, or does recruitment need a funding source lined up before IRB submission rather than after?
