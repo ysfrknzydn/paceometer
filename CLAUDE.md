@@ -55,6 +55,18 @@ When adding entries: mark uncertain fields explicitly (`unconfirmed, verify at U
 
 This is a synthesis document — unlike `lit_review.md`, prose here is expected to interpret and connect findings, not just list them. Numbers and quotes still need to trace back to a verified source. Genuine open research gaps found in the literature (e.g. the durability of a static pace display's debiasing effect not being tested outside a lab) should be called out prominently — the user has explicitly asked for this kind of gap to be emphasized, not buried in a single sentence, since it's the project's actual research opportunity.
 
+## Citing sources in `paceometer_review.qmd`
+
+The report's `## References` section lists full citations (authors/year/venue/volume/pages), organized by the report's own section headers, not `lit_review.md`'s section numbers. When adding or correcting a citation there, verify author list, year, and venue directly against that source's own title page/header in `mds/` — don't trust a secondary listing (including `lit_review.md`'s own fields, several of which were originally marked `unconfirmed`) without checking. Where a field genuinely isn't stated or legible in the source itself (a masthead-less preprint, OCR loss on the title page), say so explicitly in the reference entry rather than guessing or dropping the source. Batch this kind of verification across parallel forks when checking many sources at once — it's local-file-only work, well suited to the fork pattern noted below.
+
+## Repository / publishing
+
+This project is a public GitHub repo (`ysfrknzydn/paceometer`), initialized partway through the project's life — check `git status`/`git log` before assuming a clean-slate history. `pdfs/` and `mds/` are gitignored and must stay that way: most of the 54 sources are copyrighted journal articles, and `mds/` is a full-text derivative of the same. `.venv/` and `.claude/` are also gitignored as local-only. Only commit when explicitly asked; when asked, follow the repo's existing commit-message style (see `git log`).
+
+## Prose style in `paceometer_review.qmd`
+
+The report's prose was deliberately rewritten with the `humanizer` skill to remove AI-sounding patterns. Concretely: no em dashes used as clause separators anywhere in the prose (en dashes for numeric ranges and compound terms like "effectiveness–acceptability paradox" are fine and were kept), no negative-parallelism constructions ("not just X — it's Y"), minimal boldface reserved for genuinely load-bearing terms/numbers rather than whole-sentence emphasis. If you edit or add prose here, keep it consistent with that pass rather than reintroducing those patterns.
+
 ## Operational notes
 
 - Forked subagents' (`Agent` tool, `subagent_type: "fork"`) WebSearch/WebFetch calls were rejected in this environment, likely because there's no live session to approve tool permissions for a background subagent. Forks work fine for **local file reads** (e.g., digesting a batch of `mds/` files in parallel), but do direct web research from the main conversation, not via forks.
