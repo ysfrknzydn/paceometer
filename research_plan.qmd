@@ -72,6 +72,20 @@ Once Phase 1's live display is working, this phase adds the layer that makes the
 
 This is the mechanism that reconciles two things that otherwise pull against each other: a privacy commitment specific enough to answer that trust concern directly, and an experiment that still needs some form of objective behavioral evidence rather than self-report alone. One open technical question to resolve during this phase: whether "the optimal zone" is defined against a fixed reference speed (as the companion report's interactive tool does, @sec-question) or against the posted speed limit of the actual road being driven. The second option needs a speed-limit lookup, and the well-known ones (Google's Roads API, HERE, TomTom) are metered services with no free tier generous enough for continuous use during real driving, which doesn't fit a zero-budget summer. A free alternative exists in OpenStreetMap's speed-limit tags via the Overpass API, but coverage and accuracy vary by road and would need real testing before being trusted for this. Absent that, a fixed reference speed is the safer, cheaper default to build against now.
 
+### The free-tier stack, at a glance {#sec-stack}
+
+Everything Phases 1 and 2 depend on is free for a GW student today, with a specific paid alternative ruled out for each one:
+
+| Need | Free choice | Paid alternative ruled out |
+|---|---|---|
+| App platform | Progressive Web App, installed to the home screen | Native iOS app (Apple Developer Program, $99/year, plus App Store review time) |
+| Hosting | GitHub Pages, static, no backend | Any host charging for server-side storage or compute |
+| Live location | Browser Geolocation API | N/A, no paid alternative is needed here |
+| Speed-limit lookup (optional, Phase 2) | OpenStreetMap tags via the Overpass API | Google Roads API, HERE, TomTom, all metered with no free tier generous enough for continuous use |
+| Writing the code | Claude Code, an existing personal subscription | A contracted developer or a paid no-code platform |
+
+: Nothing here requires a project budget; the one open question is whether Overpass's coverage is good enough to trust once real testing starts (@sec-phase2). {#tbl-stack}
+
 ### Phase 3: adaptive feedback prototype (stretch) {#sec-phase3}
 
 The static display is the fastest thing to ship, but it isn't the thing the fall experiment actually needs to test. Herberz et al.'s (2019) "Pop-up assistant", feedback that intervenes at the moment of a speed decision rather than sitting as an ambient number, is the design that survived the durability follow-up where the static display didn't (@sec-question). Building a rough version of that, adaptive enough to give the fall study a real third arm instead of forcing a two-arm design by default, is this phase's goal; polish can come later.
@@ -115,6 +129,131 @@ The privacy and consent architecture in @sec-privacy, no raw location data colle
 ## Week-by-Week Milestones {#sec-milestones}
 
 The two tracks run side by side deliberately (@sec-purpose); neither should wait on the other to make progress. The pace below assumes a first-time app build, leaning on Claude Code for the actual coding, so it's deliberately conservative in two places: week 1 keeps tooling overhead low rather than front-loading a steep learning curve, and week 5 gives dogfooding a full week of its own instead of squeezing it in alongside other work, since a first build tends to surface more friction than experience would predict.
+
+::: {#fig-track-timeline}
+```{mermaid}
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Source Sans 3, sans-serif",
+    "titleColor": "#0B2545",
+    "textColor": "#0B2545",
+    "primaryColor": "#1B4E8C",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#0B2545",
+    "lineColor": "#9AA5B1",
+    "sectionBkgColor": "#F4F6F8",
+    "altSectionBkgColor": "#ffffff",
+    "gridColor": "#E1E5EA",
+    "taskTextColor": "#ffffff",
+    "taskTextOutsideColor": "#0B2545",
+    "taskTextLightColor": "#0B2545",
+    "taskBkgColor": "#1B4E8C",
+    "taskBorderColor": "#0B2545",
+    "activeTaskBkgColor": "#8A94A3",
+    "activeTaskBorderColor": "#5C6B7A",
+    "critBkgColor": "#D9603B",
+    "critBorderColor": "#9C4327",
+    "doneTaskBkgColor": "#E8A23D",
+    "doneTaskBorderColor": "#9C6A1F"
+  },
+  "gantt": {
+    "useMaxWidth": false,
+    "fontSize": 13,
+    "barHeight": 20,
+    "barGap": 6,
+    "topPadding": 65,
+    "titleTopMargin": 30,
+    "leftPadding": 105,
+    "rightPadding": 20,
+    "gridLineStartPadding": 20,
+    "numberSectionStyles": 2,
+    "tickInterval": "1week",
+    "weekday": "monday"
+  },
+  "themeCSS": ".titleText { font-size: 22px; font-weight: 700; font-family: Fraunces, serif; }"
+}}%%
+gantt
+    title Seven weeks, two tracks running in parallel
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %d
+    todayMarker off
+
+    section Track A: App
+    GPS scaffold      :a1, 2026-07-13, 7d
+    Pace calc         :a2, after a1, 7d
+    Static POC        :a3, after a2, 7d
+    Metrics live      :a4, after a3, 7d
+    Dogfooding        :a5, after a4, 7d
+    Adaptive UI       :crit, a6, after a5, 7d
+    Freeze build      :a7, after a6, 7d
+
+    section Track B: Experiment & IRB
+    Design v1         :b1, 2026-07-13, 7d
+    Instruments       :b2, after b1, 7d
+    IRB drafted       :b3, after b2, 7d
+    Submit IRB application :milestone, done, m1, after b3, 0d
+    Await IRB revisions :active, b5, after b3, 14d
+    Rollout plan      :b6, after b5, 7d
+    IRB check-in      :b7, after b6, 7d
+```
+Both tracks run start to finish across the same seven weeks. Week 6's adaptive prototype (coral) is the one stretch goal that can be dropped without disturbing anything else; IRB submission (amber diamond, week 4) is the one dependency neither of us controls the timing of.
+:::
+
+::: {#fig-critical-path}
+```{mermaid}
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif",
+    "primaryColor": "#1B4E8C",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#0B2545",
+    "lineColor": "#5C6B7A",
+    "edgeLabelBackground": "#F4F6F8"
+  },
+  "flowchart": {
+    "curve": "linear",
+    "htmlLabels": false,
+    "nodeSpacing": 25,
+    "rankSpacing": 55
+  },
+  "themeCSS": ".edgeLabel tspan, .edgeLabel text { fill: #0B2545 !important; }"
+}}%%
+flowchart LR
+    classDef normal fill:#1B4E8C,stroke:#0B2545,color:#ffffff
+    classDef stretch fill:#D9603B,stroke:#9C4327,color:#ffffff
+    classDef milestone fill:#E8A23D,stroke:#9C6A1F,color:#0B2545
+    classDef ext fill:#F4F6F8,stroke:#5C6B7A,color:#0B2545,stroke-dasharray: 4 3
+    classDef trackB fill:#2E8B7C,stroke:#1C5A50,color:#ffffff
+
+    P12["Phases 1-2
+solid app"] --> DOG["Dogfooding"]
+    DOG --> P3{{"Phase 3: adaptive UI
+(stretch)"}}
+    P3 -->|slips| FB["Fallback:
+two-arm design"]
+
+    DRAFT["IRB drafted"] --> SUB(["Submit IRB
+Week 4"])
+    SUB -->|"timing not
+ours to control"| REV["Await IRB
+revisions"]
+    REV --> ROLL["Rollout
+logistics"]
+
+    SUB -.->|"gates, regardless
+of Track A"| FALL["Fall field study
+(next semester)"]
+
+    class P12,DOG normal
+    class P3,FB stretch
+    class DRAFT,REV,ROLL trackB
+    class SUB milestone
+    class FALL ext
+```
+What actually blocks what. Track A's chain (blue) only depends on its own steps finishing in order, and Phase 3 (coral) is the one link that can break without taking anything else down with it. Track B's chain (teal) runs independently until IRB submission (amber): that step gates the fall field study regardless of how Track A's build is going, and it is the one piece of timing neither of us controls.
+:::
 
 | Week | Track A: App | Track B: Experiment & IRB |
 |---|---|---|
