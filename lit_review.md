@@ -6,15 +6,15 @@ first author + year (e.g. `svenson2008.pdf`) will make them easy to match
 back to this list.
 
 **Jump to a section:**
-[0. GW Libraries access](#0-using-gw-libraries-to-get-full-text-and-find-more) ·
-[1. Time-saving bias](#1-time-saving-bias--speed-misperception-core-psychology) ·
-[2. Crash risk](#2-speed-vs-crash-risk--severity) ·
-[3. Fuel consumption](#3-speed-vs-fuel-consumption--fuel-economy-databases) ·
-[Fuel economy databases](#fuel-economy-databases-apis--cost-calculators) ·
-[4. Feedback & ISA](#4-eco-driving-feedback-intelligent-speed-adaptation--in-vehicle-hmi-effectiveness) ·
-[5. Prior art & dashboard UI](#5-existing-paceometer-prior-art--dashboardhud-ui-design) ·
-[6. Survey instruments](#6-validated-survey-instruments-for-appux-evaluation) ·
-[7. Follow-up deep dives](#7-follow-up-deep-dive-the-five-threads-from-the-earlier-worth-doing-next-list) ·
+[0. GW Libraries access](#using-gw-libraries-to-get-full-text-and-find-more) ·
+[1. Time-saving bias](#time-saving-bias-speed-misperception-core-psychology) ·
+[2. Crash risk](#speed-vs.-crash-risk-severity) ·
+[3. Fuel consumption](#speed-vs.-fuel-consumption-fuel-economy-databases) ·
+[Fuel economy databases](#fuel-economy-databases-apis-cost-calculators) ·
+[4. Feedback & ISA](#eco-driving-feedback-intelligent-speed-adaptation-in-vehicle-hmi-effectiveness) ·
+[5. Prior art & dashboard UI](#existing-paceometer-prior-art-dashboardhud-ui-design) ·
+[6. Survey instruments](#validated-survey-instruments-for-appux-evaluation) ·
+[7. Follow-up deep dives](#follow-up-deep-dive-the-five-threads-from-the-earlier-worth-doing-next-list) ·
 [Open threads](#follow-up-searches-worth-doing-next-not-yet-completed)
 
 ---
