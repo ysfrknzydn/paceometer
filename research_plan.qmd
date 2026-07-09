@@ -275,7 +275,7 @@ By the end of week seven, "we proved this is possible" means, concretely:
 - The on-device aggregate-metrics pipeline (@sec-phase2) produces sane, verified numbers across multiple real test drives, with zero raw location data ever persisted or transmitted off the device.
 - At least a rough adaptive-feedback prototype exists (@sec-phase3), or, if it doesn't, the fallback two-arm fall design has been explicitly confirmed rather than left as a gap.
 - Internal dogfooding (@sec-dogfood) turned up no blocking usability issues: the app doesn't crash, doesn't meaningfully drain the battery, and doesn't interfere with a navigation app running alongside it.
-- The draft experiment protocol, outcome measures, and consent/privacy materials (@sec-track-b) are complete and ready for the professor's review.
+- The draft experiment protocol, outcome measures, and consent/privacy materials (@sec-track-b) are complete and ready for review.
 - The IRB application has been submitted. Approval itself isn't required by week seven, since that timeline isn't fully in our control, but submission is.
 
 ## Open Questions Yet To Be Decided {#sec-open-questions}
